@@ -1,6 +1,6 @@
 import Fastify from "npm:fastify";
 import { Database } from "npm:sqlite";
-import { createClient } from "@libsql/client";
+import { createClient } from "npm:@libsql/client";
 import { Environment } from "../enums/environment.ts";
 import { FragmentController } from "../controllers/fragment-controller.ts";
 import { EventsTable } from "../controllers/fragments/events-table.ts";

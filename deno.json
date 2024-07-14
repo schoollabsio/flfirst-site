@@ -4,7 +4,8 @@
     "https://deno.land/x/sqlite/mod.ts": "https://deno.land/x/sqlite@3.1.1/mod.ts"
   },
   "tasks": {
-    "dev": "deno run --allow-env --allow-sys --allow-net --allow-read --watch app.ts"
+    "dev": "deno run --allow-env --allow-sys --allow-net --allow-read --watch app.ts",
+    "start": "deno run --allow-env --allow-sys --allow-net --allow-read app.ts"
   }
 }
 
