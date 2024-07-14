@@ -19,7 +19,7 @@
             };
 
             const loadPage = async () => {
-                document.querySelector("#page").setAttribute("page", window.location.hash.substring(1));
+                document.querySelector("#page").setAttribute("page", window.location.hash.substring(1) || "events");
                 loadFragments(document);
             };
 
