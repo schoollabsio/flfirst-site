@@ -7,6 +7,7 @@ import { EventsTable } from "../controllers/fragments/events-table.ts";
 import { Fragment, Params, Query } from "../controllers/fragments/interface.ts";
 import { TeamsTable } from "../controllers/fragments/teams-table.ts";
 import { Page } from "../controllers/fragments/page.ts";
+import { VideosTable } from "../controllers/fragments/videos-table.ts";
 
 export class Context {
 
@@ -28,11 +29,16 @@ export class Context {
         return new TeamsTable(this);
     }
 
+    get videosTable() {
+        return new VideosTable(this);
+    }
+
     get fragments(): { [key: string]: Fragment }{
         return {
             "page": this.page,
             "events": this.eventsTable,
-            "teams": this.teamsTable
+            "teams": this.teamsTable,
+            "videos": this.videosTable,
         };
     }
 
