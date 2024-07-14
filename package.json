@@ -1,0 +1,17 @@
+{
+  "name": "flfirst-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compose": "docker-compose up",
+    "compose:build": "docker-compose up --build",
+    "start": "deno run --allow-env --allow-sys --allow-net --allow-read app.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "4.28.0"
+  }
+}
