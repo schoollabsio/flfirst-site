@@ -19,7 +19,7 @@
             };
 
             const loadPage = async () => {
-                document.querySelector("#page").setAttribute("page", window.location.hash.substring(1) || "events");
+                document.querySelector("#page").setAttribute("page", window.location.hash.substring(1) || "announcements");
                 loadFragments(document);
             };
 
@@ -89,8 +89,8 @@
             </div>
         </nav>
         <!-- Centered Content -->
-        <div class="flex items-center justify-center mt-5">
-            <div id="page" fragment-id="page" page="events">
+        <div class="flex items-center justify-center pt-5 px-5">
+            <div id="page" fragment-id="page" page="events" class="min-w-full">
         </div>
 
         <!-- Footer -->

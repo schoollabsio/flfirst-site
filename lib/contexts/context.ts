@@ -1,5 +1,4 @@
 import Fastify from "npm:fastify";
-import { Database } from "npm:sqlite";
 import { createClient } from "npm:@libsql/client";
 import { Environment } from "../enums/environment.ts";
 import { FragmentController } from "../controllers/fragment-controller.ts";
@@ -8,6 +7,7 @@ import { Fragment, Params, Query } from "../controllers/fragments/interface.ts";
 import { TeamsTable } from "../controllers/fragments/teams-table.ts";
 import { Page } from "../controllers/fragments/page.ts";
 import { VideosTable } from "../controllers/fragments/videos-table.ts";
+import { Announcements } from "../controllers/fragments/announcements.ts";
 
 export class Context {
 
@@ -33,12 +33,17 @@ export class Context {
         return new VideosTable(this);
     }
 
+    get announcements() {
+        return new Announcements(this);
+    }
+
     get fragments(): { [key: string]: Fragment }{
         return {
             "page": this.page,
             "events": this.eventsTable,
             "teams": this.teamsTable,
             "videos": this.videosTable,
+            "announcements": this.announcements
         };
     }
 

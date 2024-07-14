@@ -5,18 +5,7 @@ services:
     build: .
     ports:
       - "3000:3000"
-    depends_on:
-      - sqlite-db
     volumes:
       - ./lib:/app/lib
       - ./static:/app/static
-    command: deno task start
-
-  sqlite-db:
-    image: nouchka/sqlite3
-    container_name: sqlite_db
-    volumes:
-      - ./data:/data
-    environment:
-      SQLITE_DATABASE: /data/database.sqlite
-
+    command: deno task dev
