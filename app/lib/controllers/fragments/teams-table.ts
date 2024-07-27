@@ -1,6 +1,6 @@
-import { Fragment } from "./interface.ts";
+import { Fragment } from "./interface";
 
-const Team = ({ name, number }: { name: string, number: string }) => `
+const Team = ({ name, number }: { name: string; number: string }) => `
     <tr>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             ${name}
@@ -12,21 +12,18 @@ const Team = ({ name, number }: { name: string, number: string }) => `
 `;
 
 export class TeamsTable implements Fragment {
+  constructor(private ctx: {}) {}
 
-    constructor(private ctx: {
-        
-    }) {}
-
-    async render(params: { id: string }) {
-        const teams = [
-            { name: "Team 1", number: '4318' },
-            { name: "Team 2", number: '7236' },
-            { name: "Team 3", number: '1234' },
-            { name: "Team 4", number: '11111' },
-            { name: "Team 5", number: '9087' },
-            { name: "Team 6", number: '4562' },
-        ];
-        return `
+  async render(params: { id: string }) {
+    const teams = [
+      { name: "Team 1", number: "4318" },
+      { name: "Team 2", number: "7236" },
+      { name: "Team 3", number: "1234" },
+      { name: "Team 4", number: "11111" },
+      { name: "Team 5", number: "9087" },
+      { name: "Team 6", number: "4562" },
+    ];
+    return `
             <div>
                 <h1 class="text-4xl font-bold text-center text-gray-900">Teams</h1>
                 <div class="text-center mt-5">
@@ -42,12 +39,12 @@ export class TeamsTable implements Fragment {
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            ${teams.map(Team).join('')}
+                            ${teams.map(Team).join("")}
                             <!-- More rows can be added here -->
                         </tbody>
                     </table>                
                 </div>
             </div>
         `;
-    }
+  }
 }

@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model FirstEvent {
+  id Int @id @default(autoincrement())
+
+  code            String
+  name            String
+  type            String
+  format          String
+  season          String
+  website         String?
+  date_start      DateTime
+  date_end        DateTime
+  live_stream_url String?
+
+  // location info
+  location_name           String
+  location_address        String
+  location_city           String
+  location_state_province String
+  location_country        String
+  location_zip            String?
+  location_timezone       String
+  location_website        String?
+
+  // registraion info
+  open     Boolean
+  deadline DateTime?
+  url      String?
+
+  saved_at DateTime
+
+  @@map("first_event")
+}

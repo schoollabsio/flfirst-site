@@ -1,0 +1,53 @@
+name: Staging Deploy
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+  # Run on pushes to staging branch
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # setup ssh key
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: "just-a-placeholder-so-we-dont-get-errors"
+
+      # add staging server to known hosts
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H staging.schoollabs.io >> ~/.ssh/known_hosts
+
+      # Log in to the DO Container Registry
+      - name: Log in to DO Container Registry
+        run: docker login --username ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --password ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
+
+      # Generate the staging compose file from the template
+      - name: Generate Staging Compose File
+        run: npm run compose:generate:staging
+
+      # Build the image
+      - name: Build Image
+        run: npm run ci:build
+
+      # Push the image to the DO Container Registry
+      - name: Push Image
+        run: npm run push:image
+
+      # Copy the compose file to the staging server
+      - name: Copy to Staging
+        run: npm run compose:sync:staging
+
+      # Deploy the stack to the staging server
+      - name: Deploy Stack
+        run: ssh root@staging.polk.one "cd employee-data-service && npm run deploy:staging"

@@ -1,102 +1,171 @@
 <html>
-    <head>
-        <title>Static Page</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
+  <head>
+    <title>Static Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      const loadFragments = async (el) => {
+        const elements = el.querySelectorAll("[fragment-id]");
+        Array.from(elements).map(async (e) => {
+          const attributes = Array.from(e.attributes)
+            .map((attr) => ({ name: attr.name, value: attr.value }))
+            .filter((attr) => attr.name !== "fragment-id");
+          const response = await fetch(
+            `/fragments/${e.getAttribute("fragment-id")}?${attributes.map((attr) => `${attr.name}=${attr.value}`).join("&")}`,
+          );
+          const html = await response.text();
+          e.innerHTML = html;
+          loadFragments(e);
+        });
+      };
 
-            const loadFragments = async (el) => {
-                const elements = el.querySelectorAll('[fragment-id]');
-                Array.from(elements).map(async e => {
-                    const attributes = Array.from(e.attributes)
-                        .map(attr => ({ name: attr.name, value: attr.value }))
-                        .filter(attr => attr.name !== 'fragment-id');
-                    const response = await fetch(`/fragments/${e.getAttribute('fragment-id')}?${attributes.map(attr => `${attr.name}=${attr.value}`).join('&')}`);
-                    const html = await response.text();
-                    e.innerHTML = html;
-                    loadFragments(e);
-                });
-            };
+      const loadPage = async () => {
+        document
+          .querySelector("#page")
+          .setAttribute(
+            "page",
+            window.location.hash.substring(1) || "announcements",
+          );
+        loadFragments(document);
+      };
 
-            const loadPage = async () => {
-                document.querySelector("#page").setAttribute("page", window.location.hash.substring(1) || "announcements");
-                loadFragments(document);
-            };
+      document.addEventListener("DOMContentLoaded", () => {
+        const menuButton = document.getElementById("menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
 
-            document.addEventListener("DOMContentLoaded", () => {
-                const menuButton = document.getElementById('menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener("click", (e) => {
+          mobileMenu.classList.toggle("hidden");
+        });
 
-                menuButton.addEventListener('click', (e) => {
-                    mobileMenu.classList.toggle('hidden');
-                });
+        loadPage();
+      });
 
-                loadPage();
-            });
+      window.addEventListener("hashchange", () => {
+        loadPage();
+      });
+    </script>
+  </head>
 
-            window.addEventListener(
-                "hashchange",
-                () => {
-                    loadPage();
-                },
-            );
-        </script>
-    </head>
-    <body class="bg-gray-100 flex flex-col min-h-screen">
-        <!-- Navigation Bar -->
-        <nav class="bg-white shadow-md w-full">
-            <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-                <div class="relative flex items-center justify-between h-16">
-                    <!-- Logo -->
-                    <div class="absolute inset-y-0 left-0 flex items-center">
-                        <a href="/" class="flex-shrink-0">
-                            <img class="h-8 w-auto" src="FIRSTTech_iconHorz_RGB.png" alt="Logo">
-                        </a>
-                    </div>
-                    <!-- Links -->
-                    <div class="flex-1 flex items-center justify-end">
-                        <div class="hidden sm:block">
-                            <div class="flex space-x-4">
-                                <a href="#events" class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Events</a>
-                                <a href="#teams" class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Teams</a>
-                                <a href="#videos" class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Videos</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Mobile Menu Button -->
-                    <div id="menu-button" class="absolute inset-y-0 right-0 flex items-center sm:hidden">
-                        <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
-                            <span class="sr-only">Open main menu</span>
-                            <!-- Icon when menu is closed -->
-                            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
-                            </svg>
-                            <!-- Icon when menu is open -->
-                            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+  <body class="bg-gray-100 flex flex-col min-h-screen pt-16 pb-20">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md w-full fixed top-0" style="opacity: 0.85">
+      <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div class="relative flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div class="absolute inset-y-0 left-0 flex items-center">
+            <a href="/" class="flex-shrink-0">
+              <img
+                class="h-8 w-auto"
+                src="FIRSTTech_iconHorz_RGB.png"
+                alt="Logo"
+              />
+            </a>
+          </div>
+          <!-- Links -->
+          <div class="flex-1 flex items-center justify-end">
+            <div class="hidden sm:block">
+              <div class="flex space-x-4">
+                <a
+                  href="#events"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Events</a
+                >
+                <!-- <a
+                  href="#teams"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Teams</a
+                > -->
+                <!-- <a
+                  href="#videos"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Videos</a
+                > -->
+              </div>
             </div>
-            <!-- Mobile Menu -->
-            <div class="hidden" id="mobile-menu">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a href="#events" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium">Events</a>
-                    <a href="#teams" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium">Teams</a>
-                    <a href="#videos" class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium">Videos</a>
-                </div>
-            </div>
-        </nav>
-        <!-- Centered Content -->
-        <div class="flex items-center justify-center pt-5 px-5">
-            <div id="page" fragment-id="page" page="events" class="min-w-full">
+          </div>
+          <!-- Mobile Menu </div>Button -->
+          <div
+            id="menu-button"
+            class="absolute inset-y-0 right-0 flex items-center sm:hidden"
+          >
+            <button
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Open main menu</span>
+              <!-- Icon when menu is closed -->
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+              <!-- Icon when menu is open -->
+              <svg
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div class="hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a
+            href="#events"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Events</a
+          >
+          <!-- <a
+            href="#teams"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Teams</a
+          > -->
+          <!-- <a
+            href="#videos"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Videos</a
+          > -->
+        </div>
+      </div>
+    </nav>
+    <!-- Centered Content -->
+    <div class="flex items-center justify-center pt-5 px-5">
+      <div id="page" fragment-id="page" page="events" class="min-w-full"></div>
 
-        <!-- Footer -->
-        <div class="w-full flex justify-center items-center py-4 absolute bottom-0 bg-gray-100">
-            <img class="h-8 w-auto" src="VisitCF_4cHorLogo-png.png" alt="Visit Central Florida">
-        </div>
-    </body>
+      <!-- Footer 0px -2px 6px -1px rgb(243 244 246 / var(--tw-bg-opacity)) -->
+      <div
+        class="w-full flex justify-center items-center py-4 fixed bottom-0 bg-gray-100 shadow-[0_-2px_6px_-1px_rgb(243,244,246,1)]"
+      >
+        <img
+          class="h-8 w-auto"
+          src="VisitCF_4cHorLogo-png.png"
+          alt="Visit Central Florida"
+        />
+      </div>
+    </div>
+  </body>
 </html>
-    

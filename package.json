@@ -1,17 +1,28 @@
 {
-  "name": "flfirst-site",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "prisma migrate deploy && nodemon --exec ts-node app/app.ts",
+    "prettier": "prettier --write .",
+    "ci:build": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD) .",
+    "ci:build:local": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:local .",
     "compose": "docker-compose up",
     "compose:build": "docker-compose up --build",
-    "start": "deno run --allow-env --allow-sys --allow-net --allow-read app.ts"
+    "compose:generate:staging": "./generate-env-yml.sh staging-template.yml staging.yml",
+    "compose:sync:staging": "rsync -cv base.yml staging.yml root@staging.schoollabs.io:~/flfirst-site",
+    "deploy:staging": "docker stack deploy -c base.yml -c staging.yml -c env.yml employee-data-service --with-registry-auth"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "fastify": "4.28.0"
+    "@fastify/static": "7.0.4",
+    "@prisma/client": "^5.17.0",
+    "better-sqlite3": "11.1.2",
+    "dayjs": "1.11.12",
+    "dotenv": "16.4.5",
+    "fastify": "4.28.0",
+    "prisma": "5.17.0",
+    "sqlite3": "5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.4",
+    "prettier": "3.3.3",
+    "ts-node": "10.9.2"
   }
 }
