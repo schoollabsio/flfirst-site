@@ -3,6 +3,4 @@ version: "3.8"
 services:
   flfirst:
     image: registry.digitalocean.com/schoollabsio/flfirst-site:${COMMIT_SHA}
-    ports:
-      - "3000:3000"
     command: npm run start
