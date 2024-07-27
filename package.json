@@ -8,8 +8,7 @@
     "compose": "docker-compose up",
     "compose:build": "docker-compose up --build",
     "compose:generate:staging": "./generate-env-yml.sh staging-template.yml staging.yml",
-    "compose:sync:staging": "rsync -cv base.yml staging.yml root@staging.schoollabs.io:~/flfirst-site",
-    "deploy:staging": "docker stack deploy -c base.yml -c staging.yml -c env.yml flfirst-site --with-registry-auth",
+    "compose:sync:staging": "rsync -cv base.yml staging.yml deploy-staging.sh root@staging.schoollabs.io:~/flfirst-site",
     "push:image": "docker push registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD)"
   },
   "dependencies": {
