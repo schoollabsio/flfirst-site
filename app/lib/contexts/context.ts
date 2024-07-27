@@ -90,7 +90,7 @@ export class Context {
   get settings() {
     return {
       environment: this.environment,
-      port: Number(process.env.PORT || 3000),
+      port: Number(process.env.PORT || 80),
       db: {
         url: process.env.DATABASE_URL || "",
         authToken: process.env.AUTH_TOKEN,

@@ -1,7 +1,5 @@
 version: "3.8"
 
 services:
-  app:
-    ports:
-      - "3000:3000"
+  flfirst:
     command: npm run dev
