@@ -4,8 +4,4 @@ services:
   app:
     ports:
       - "3000:3000"
-    volumes:
-      - ./app:/app/app
-      - ./static:/app/static
-      - ./prisma/data:/app/prisma/data
     command: npm run dev
