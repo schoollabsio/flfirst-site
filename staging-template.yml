@@ -3,7 +3,7 @@ version: "3.8"
 services:
   flfirst:
     networks:
-      - interlink
+      - interlink_network
     image: registry.digitalocean.com/schoollabsio/flfirst-site:${COMMIT_SHA}
     command: npm run start
 
