@@ -5,6 +5,4 @@ services:
     image: registry.digitalocean.com/schoollabsio/flfirst-site:${COMMIT_SHA}
     ports:
       - "3000:3000"
-    volumes:
-      - ./prisma/data:/app/prisma/data
     command: npm run start
