@@ -50,4 +50,4 @@ jobs:
 
       # Deploy the stack to the staging server
       - name: Deploy Stack
-        run: ssh root@staging.polk.one "cd employee-data-service && npm run deploy:staging"
+        run: ssh root@staging.schoollabs.io "cd flfirst-site && npm run deploy:staging"
