@@ -5,8 +5,8 @@
     "prettier": "prettier --write .",
     "ci:build": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD) .",
     "ci:build:local": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:local .",
-    "compose": "docker-compose up",
-    "compose:build": "docker-compose up --build",
+    "compose": "docker-compose -f base.yml -f local.yml up",
+    "compose:build": "docker-compose -f base.yml -f local.yml up --build",
     "compose:generate:staging": "./generate-env-yml.sh staging-template.yml staging.yml",
     "compose:sync:staging": "rsync -cv base.yml staging.yml deploy-staging.sh root@staging.schoollabs.io:~/flfirst-site",
     "push:image": "docker push registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD)"

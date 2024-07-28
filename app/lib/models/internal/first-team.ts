@@ -1,6 +1,8 @@
+import { Dayjs } from "dayjs";
+
 export interface FirstTeam {
     name: string;
-    number: number;
+    number: string;
     location: {
         city: string;
         country: string;
@@ -12,7 +14,8 @@ export interface FirstTeam {
         name: string;
         remote: boolean;
         location: string;
-    };
-    rookie_year: number;
+    } | null;
+    rookie_year: string;
     website: string | null;
+    savedAt: Dayjs;
 }

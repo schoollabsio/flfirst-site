@@ -4,15 +4,15 @@ export interface RMTeam {
   location: {
       city: string;
       country: string;
-      stateProvince: string;
-      county: string;
+      state_province: string;
+      county: string | null;
   };
   league: {
       code: string;
       name: string;
       remote: boolean;
       location: string;
-  };
-  rookieYear: number;
+  } | null;
+  rookie_year: number;
   website: string | null;
 }

@@ -53,16 +53,16 @@ model FirstTeam {
   location_city           String
   location_state_province String
   location_country        String
-  location_county         String
+  location_county         String?
 
   // league
-  league_code             String
-  league_name             String
-  league_remote           Boolean
-  league_location         String
+  league_code             String?
+  league_name             String?
+  league_remote           Boolean?
+  league_location         String?
 
   // other
-  rookie_year             Int
+  rookie_year             String
   website                 String?
 
   saved_at DateTime

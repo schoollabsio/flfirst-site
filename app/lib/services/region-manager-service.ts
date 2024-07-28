@@ -83,17 +83,17 @@ export default class RegionManagerService {
                 // location
                 location_city: team.location.city,
                 location_country: team.location.country,
-                location_state_province: team.location.stateProvince,
+                location_state_province: team.location.state_province,
                 location_county: team.location.county,
 
                 // league
-                league_code: team.league.code,
-                league_name: team.league.name,
-                league_remote: team.league.remote,
-                league_location: team.league.location,
+                league_code: team.league?.code,
+                league_name: team.league?.name,
+                league_remote: team.league?.remote,
+                league_location: team.league?.location,
 
                 // other
-                rookie_year: team.rookieYear,
+                rookie_year: team.rookie_year.toString(),
                 website: team.website,
 
                 // saved at

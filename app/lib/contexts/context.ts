@@ -151,6 +151,16 @@ export class Context {
       },
     });
 
+    scheduler.add({
+      runOnStart: true,
+      allowConcurrent: false,
+      shouldRun: Hourly.onTheHour,
+      timezone: "America/New_York",
+      function: async () => {
+        await this.regionManagerService.syncTeams();
+      },
+    });
+
     return scheduler;
   }
 
