@@ -13,10 +13,12 @@ import { Announcements } from "../controllers/fragments/announcements";
 import Scheduler, { Hourly } from "../utils/scheduler";
 import RegionManagerService from "../services/region-manager-service";
 import ConfigureSimpleFetch from "../utils/simple-fetch";
+import { marked } from "marked";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import fs from "fs/promises";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -40,6 +42,14 @@ export class Context {
 
   get videosTable() {
     return new VideosTable(this);
+  }
+
+  get fs() {
+    return fs;
+  }
+
+  get marked() {
+    return marked;
   }
 
   get announcements() {

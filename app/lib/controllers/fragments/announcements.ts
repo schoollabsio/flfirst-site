@@ -1,116 +1,69 @@
+import fs from "fs/promises";
 import { Fragment } from "./interface";
+import { join } from "path";
+import { marked } from "marked";
+
+interface AnnoucementsContext {
+    fs: typeof fs;
+    marked: typeof marked;
+}
+
+const HeadingToTextSizeMapping = {
+  1: "text-xl",
+  2: "text-lg",
+  3: "text-md",
+  4: "text-sm",
+  5: "text-sm",
+  6: "text-sm",
+};
+
+
+/**
+ * 
+ * <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
+      <p>July 14, 2024</p>
+      <br/>
+ */
+const Post = (content: string): string => `
+  <div class="bg-white shadow-md p-4">
+      
+      <div class="flex flex-col gap-4">
+          ${content}
+      </div>
+  </div>
+`;
 
 export class Announcements implements Fragment {
-  constructor(private ctx: unknown) {}
+  constructor(private context: AnnoucementsContext) {}
+
+  async pages() {
+    const announcementsDir = join(__dirname, "..", "..", "..", "..", "static", "announcements");
+    try {
+      const files = await this.context.fs.readdir(announcementsDir);
+      const fileContents = await Promise.all(files.map((file) => this.context.fs.readFile(join(announcementsDir, file), "utf-8")));
+      return fileContents;
+    } catch (error) {
+      console.error("Error reading files from announcements directory:", error);
+      return [];
+    }
+  }
 
   async render(params: { id: string }) {
+    const renderer = new this.context.marked.Renderer();
+    renderer.heading = (value) => {
+      return `<h${value.depth} class="${HeadingToTextSizeMapping[value.depth as keyof typeof HeadingToTextSizeMapping]} font-bold mb-2">${value.text}</h${value.depth}>`;
+    };
+    renderer.list = (value) => {
+      return `<ol class="list-decimal list-inside">${value.items.map(t => `<li>${t.text}</li>`).join("\n")}</ol>`;
+    };
+    const pages = await this.pages();
+    const rendered = (await Promise.all(pages
+      .map(async (page) => await this.context.marked(page, { renderer }))))
+      .map(Post)
+      .join("\n");
     return `
             <div class="flex flex-col max-w-prose mx-auto gap-4">
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white shadow-md p-4">
-                    <h2 class="text-xl font-bold mb-2">Welcome to Florida FTC</h2>
-                    <p>July 14, 2024</p>
-                    <br/>
-                    <div class="flex flex-col gap-4">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">2023-2024 Florida FIRST Tech Challenge Season</h2>
-                            <p>Welcome to the 2023-2024 season for Florida FIRST Tech Challenge! This season game is CENTERSTAGE sponsored by RTX. The Kickoff for this season is Saturday Sep 9th. While the Kickoff can be watched via the FIRSTINSPIRES website, it is recommended that Florida view the kickoff through the FIRST In Florida YouTube Channel.</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">State Video Contest - Teams Helping Teams</h2>
-                            <p>The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping Teams. The deadline to submit (Video Submission- Chose Season Competition as Video Type) a video Midnight (Eastern) on November 30th. The submitter will need to have the team passcode and the URL that is accessible to see the video. The video must be less than 1 minute and sufficient quality to be displayed on a large screen projection system. Teams must have permission from the copyright owners for music used in the video and indicate this in their video. The links for all submitted videos will be accessible on the website on December 2nd. You can submit multiple times but only the last submission will be available to be judged.</p>
-                        </div>
-                    </div>
-                </div>
+              ${rendered}
             </div>
         `;
   }

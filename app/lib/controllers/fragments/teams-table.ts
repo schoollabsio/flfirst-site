@@ -58,11 +58,11 @@ export class TeamsTable implements Fragment {
     });
 
     return `
-            <div>
+            <div class="bg-white shadow-md p-4 max-w-fit min-w- mx-auto">
                 <h1 class="text-4xl font-bold text-center text-gray-900">Teams</h1>
                 <div class="text-center mt-5">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead>
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Number
