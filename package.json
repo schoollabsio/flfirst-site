@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@fastify/static": "7.0.4",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.18.0",
     "better-sqlite3": "11.1.2",
     "dayjs": "1.11.12",
     "dotenv": "16.4.5",
