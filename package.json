@@ -17,7 +17,7 @@
     "better-sqlite3": "11.1.2",
     "dayjs": "1.11.12",
     "dotenv": "16.4.5",
-    "fastify": "4.28.0",
+    "fastify": "4.28.1",
     "marked": "14.0.0",
     "prisma": "5.17.0",
     "sqlite3": "5.1.7"
