@@ -53,8 +53,8 @@ jobs:
       #   run: ssh root@staging.schoollabs.io "cd flfirst-site && ./deploy-staging.sh"
 
       - name: log command
-        run: echo "{\"text\":\"<https://github.com/schoollabsio/flfirst-site/commit/$(git rev-parse --short HEAD)|$(git rev-parse --short HEAD)> successfully deployed to flfirst.staging.schoollabs.io\!\"}"
+        run: echo "{\"text\":\"<https://github.com/schoollabsio/flfirst-site/commit/$(git rev-parse --short HEAD)|$(git rev-parse --short HEAD)> successfully deployed to flfirst.staging.schoollabs.io!\"}"
 
       - name: Notify Slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"<https://github.com/schoollabsio/flfirst-site/commit/$(git rev-parse --short HEAD)|$(git rev-parse --short HEAD)> successfully deployed to flfirst.staging.schoollabs.io\!\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"<https://github.com/schoollabsio/flfirst-site/commit/$(git rev-parse --short HEAD)|$(git rev-parse --short HEAD)> successfully deployed to flfirst.staging.schoollabs.io!\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
