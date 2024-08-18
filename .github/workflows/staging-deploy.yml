@@ -51,3 +51,9 @@ jobs:
       # Deploy the stack to the staging server
       - name: Deploy Stack
         run: ssh root@staging.schoollabs.io "cd flfirst-site && ./deploy-staging.sh"
+
+      - name: Notify Slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"Deployment Successful!"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
