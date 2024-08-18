@@ -55,5 +55,5 @@ jobs:
       - name: Notify Slack
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"$(git rev-parse --short HEAD) succesfully deployed to flfirst.staging.schoollabs.io!"}' \
+          --data "{\"text\":\"<https://github.com/schoollabsio/flfirst-site/commit/$(git rev-parse --short HEAD)|$(git rev-parse --short HEAD)> successfully deployed to flfirst.staging.schoollabs.io\!\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
