@@ -8,7 +8,14 @@ export interface RMEvent {
   date_start: Date;
   date_end: Date;
   live_stream_url?: string;
-  
+
+  league?: {
+    code: string;
+    name: string;
+    remote?: boolean;
+    location?: string;
+  };
+
   location: {
     name: string;
     address: string;
@@ -18,11 +25,13 @@ export interface RMEvent {
     zip?: string;
     timezone: string;
     website?: string;
-  }
+  };
 
   registration: {
     open: boolean;
     deadline?: Date;
     url?: string;
-  }
+    closes_at?: Date;
+    opens_at?: Date;
+  };
 }

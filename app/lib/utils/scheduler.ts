@@ -92,11 +92,12 @@ export default class Scheduler {
 
 // helpers for shouldRun
 
-const atMidnight = (now: Dayjs) => now.hour() === 0 && now.minute() === 0;
-const atNoon = (now: Dayjs) => now.hour() === 12 && now.minute() === 0;
-const atHour = (hour: number) => (now: Dayjs) => now.hour() === hour;
+const atMidnight = (now: Dayjs) => now.hour() === 0 && now.minute() === 0 && onSecond(0)(now);
+const atNoon = (now: Dayjs) => now.hour() === 12 && now.minute() === 0 && onSecond(0)(now);
+const atHour = (hour: number) => (now: Dayjs) => now.hour() === hour && onMinute(0)(now) && onSecond(0)(now);
 
-export const onSecond = (second: number) => (now: Dayjs) => now.second() === second;
+export const onSecond = (second: number) => (now: Dayjs) =>
+  now.second() === second;
 const onMinute = (minute: number) => (now: Dayjs) =>
   now.minute() === minute && onSecond(0)(now);
 

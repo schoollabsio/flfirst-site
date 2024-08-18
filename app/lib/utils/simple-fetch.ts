@@ -5,7 +5,7 @@ export interface RequestTransformer {
   match: (url: string, opts: RequestInit) => boolean;
   pre: (
     url: string,
-    opts: RequestInit
+    opts: RequestInit,
   ) => Promise<{ url: string; opts: RequestInit }>;
 }
 
@@ -23,7 +23,6 @@ const ConfigureSimpleFetch = (context: FetchContext) => {
     const transformer = context.transformers.find((t) => t.match(url, opts));
     if (transformer) {
       const { url: newUrl, opts: newOpts } = await transformer.pre(url, opts);
-      // console.log(newUrl, newOpts);
       return context.fetch(newUrl, newOpts);
     }
     return context.fetch(url, opts);

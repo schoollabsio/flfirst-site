@@ -19,6 +19,8 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import fs from "fs/promises";
+import { WhatIsFirst } from "../controllers/fragments/what-is-first";
+import { GetInvolved } from "../controllers/fragments/get-involved";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -56,6 +58,14 @@ export class Context {
     return new Announcements(this);
   }
 
+  get whatIsFirst() {
+    return new WhatIsFirst(this);
+  }
+
+  get getInvolved() {
+    return new GetInvolved(this);
+  }
+
   get fragments(): { [key: string]: Fragment } {
     return {
       page: this.page,
@@ -63,6 +73,8 @@ export class Context {
       teams: this.teamsTable,
       videos: this.videosTable,
       announcements: this.announcements,
+      ["what-is-first"]: this.whatIsFirst,
+      ["get-involved"]: this.getInvolved,
     };
   }
 
@@ -106,10 +118,10 @@ export class Context {
         authToken: process.env.AUTH_TOKEN,
       },
       regionManager: {
-        host: 'https://ftcregion.com',
-        season: '2024',
-        region: 'USFL',
-      }
+        host: "https://ftcregion.com",
+        season: "2024",
+        region: "USFL",
+      },
     };
   }
 
@@ -134,12 +146,12 @@ export class Context {
                 ...opts,
                 headers: {
                   ...opts.headers,
-                  "X-RM-API-Version": "2024-07-26",
+                  "X-RM-API-Version": "2024-08-13",
                 },
               },
             };
           },
-        }
+        },
       ],
     });
   }
@@ -157,7 +169,13 @@ export class Context {
       shouldRun: Hourly.onTheHour,
       timezone: "America/New_York",
       function: async () => {
-        await this.regionManagerService.syncEvents();
+        try {
+          this.logger.info("Syncing events...");
+          await this.regionManagerService.syncEvents();
+          this.logger.info("Finished syncing events.");
+        } catch (e) {
+          this.logger.error(e);
+        }
       },
     });
 
@@ -167,7 +185,11 @@ export class Context {
       shouldRun: Hourly.onTheHour,
       timezone: "America/New_York",
       function: async () => {
-        await this.regionManagerService.syncTeams();
+        try {
+          await this.regionManagerService.syncTeams();
+        } catch (e) {
+          this.logger.error(e);
+        }
       },
     });
 

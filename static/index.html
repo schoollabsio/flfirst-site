@@ -2,8 +2,28 @@
   <head>
     <title>Static Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
     <script>
+
+      const Pages = [
+        {
+          id: "events",
+          title: "Events"
+        },
+        {
+          id: "teams",
+          title: "Teams"
+        },
+      ]
+
       const loadFragments = async (el) => {
         const elements = el.querySelectorAll("[fragment-id]");
         Array.from(elements).map(async (e) => {
@@ -20,13 +40,24 @@
       };
 
       const loadPage = async () => {
+        const pageId = window.location.hash.substring(1) || "announcements";
         document
           .querySelector("#page")
           .setAttribute(
             "page",
-            window.location.hash.substring(1) || "announcements",
+            pageId,
           );
         loadFragments(document);
+
+        // highlight the current page in the navigation bar
+        const element = document.getElementById(pageId);
+        Pages.forEach(page => {
+          const unselected = document.getElementById(page.id);
+          if (unselected.id !== pageId) {
+            unselected.classList.remove("bg-gray-200");
+          }
+        });
+        element.classList.add("bg-gray-200");
       };
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -66,15 +97,27 @@
             <div class="hidden sm:block">
               <div class="flex space-x-4">
                 <a
+                  id="events"
                   href="#events"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Events</a
                 >
                 <a
+                  id="teams"
                   href="#teams"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Teams</a
                 >
+                <!-- <a
+                  href="#what-is-first"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >What is First Tech Challenge™?</a
+                > -->
+                <!-- <a
+                  href="#get-involved"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Get Involved</a
+                > -->
                 <!-- <a
                   href="#videos"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
@@ -135,11 +178,13 @@
       <div class="hidden" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1">
           <a
+            id="events-mobile"
             href="#events"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Events</a
           >
           <a
+            id="events-mobile"
             href="#teams"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Teams</a
@@ -160,11 +205,13 @@
       <div
         class="w-full flex justify-center items-center py-4 fixed bottom-0 bg-gray-100 shadow-[0_-2px_6px_-1px_rgb(243,244,246,1)]"
       >
-        <img
-          class="h-8 w-auto"
-          src="VisitCF_4cHorLogo-png.png"
-          alt="Visit Central Florida"
-        />
+        <a href="https://visitcentralflorida.org/" target="_blank">
+          <img
+            class="h-8 w-auto"
+            src="VisitCF_4cHorLogo-png.png"
+            alt="Visit Central Florida"
+          />
+        </a>
       </div>
     </div>
   </body>

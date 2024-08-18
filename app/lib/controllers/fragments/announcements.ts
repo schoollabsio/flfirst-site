@@ -4,8 +4,8 @@ import { join } from "path";
 import { marked } from "marked";
 
 interface AnnoucementsContext {
-    fs: typeof fs;
-    marked: typeof marked;
+  fs: typeof fs;
+  marked: typeof marked;
 }
 
 const HeadingToTextSizeMapping = {
@@ -16,7 +16,6 @@ const HeadingToTextSizeMapping = {
   5: "text-sm",
   6: "text-sm",
 };
-
 
 /**
  * 
@@ -37,10 +36,22 @@ export class Announcements implements Fragment {
   constructor(private context: AnnoucementsContext) {}
 
   async pages() {
-    const announcementsDir = join(__dirname, "..", "..", "..", "..", "static", "announcements");
+    const announcementsDir = join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "..",
+      "static",
+      "announcements",
+    );
     try {
       const files = await this.context.fs.readdir(announcementsDir);
-      const fileContents = await Promise.all(files.map((file) => this.context.fs.readFile(join(announcementsDir, file), "utf-8")));
+      const fileContents = await Promise.all(
+        files.map((file) =>
+          this.context.fs.readFile(join(announcementsDir, file), "utf-8"),
+        ),
+      );
       return fileContents;
     } catch (error) {
       console.error("Error reading files from announcements directory:", error);
@@ -54,11 +65,16 @@ export class Announcements implements Fragment {
       return `<h${value.depth} class="${HeadingToTextSizeMapping[value.depth as keyof typeof HeadingToTextSizeMapping]} font-bold mb-2">${value.text}</h${value.depth}>`;
     };
     renderer.list = (value) => {
-      return `<ol class="list-decimal list-inside">${value.items.map(t => `<li>${t.text}</li>`).join("\n")}</ol>`;
+      return `<ol class="list-decimal list-inside">${value.items.map((t) => `<li>${t.text}</li>`).join("\n")}</ol>`;
     };
     const pages = await this.pages();
-    const rendered = (await Promise.all(pages
-      .map(async (page) => await this.context.marked(page, { renderer }))))
+    const rendered = (
+      await Promise.all(
+        pages.map(
+          async (page) => await this.context.marked(page, { renderer }),
+        ),
+      )
+    )
       .map(Post)
       .join("\n");
     return `

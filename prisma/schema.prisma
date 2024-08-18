@@ -13,6 +13,8 @@ datasource db {
 model FirstEvent {
   id Int @id @default(autoincrement())
 
+  hash            String @unique
+
   code            String
   name            String
   type            String
@@ -22,6 +24,12 @@ model FirstEvent {
   date_start      DateTime
   date_end        DateTime
   live_stream_url String?
+
+  // league info
+  league_code     String?
+  league_name     String?
+  league_remote   Boolean?
+  league_location String?
 
   // location info
   location_name           String
@@ -34,9 +42,11 @@ model FirstEvent {
   location_website        String?
 
   // registraion info
-  open     Boolean
-  deadline DateTime?
-  url      String?
+  open      Boolean
+  opens_at  DateTime?
+  closes_at DateTime?
+  deadline  DateTime?
+  url       String?
 
   saved_at DateTime
 
@@ -46,8 +56,8 @@ model FirstEvent {
 model FirstTeam {
   id Int @id @default(autoincrement())
 
-  name      String
-  number    String
+  name   String
+  number String
 
   // location
   location_city           String
@@ -56,14 +66,16 @@ model FirstTeam {
   location_county         String?
 
   // league
-  league_code             String?
-  league_name             String?
-  league_remote           Boolean?
-  league_location         String?
+  league_code     String?
+  league_name     String?
+  league_remote   Boolean?
+  league_location String?
 
   // other
-  rookie_year             String
-  website                 String?
+  rookie_year String
+  website     String?
+  url         String
+  event_ready Boolean
 
   saved_at DateTime
 

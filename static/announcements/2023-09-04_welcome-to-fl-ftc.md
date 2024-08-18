@@ -1,6 +1,6 @@
 # Welcome to Florida FTC
 
-*September 4th, 2023*
+_September 4th, 2023_
 
 ## 2023-2024 Florida FIRST Tech Challenge Season
 
@@ -14,7 +14,7 @@ The Florida FIRST Tech Challenge video competition is to celebrate Teams Helping
 
 ## Florida Championship T-shirt Design Contest
 
-This is your opportunity to get a guaranteed invitation to the Florida Championship on March 1-2, 2024.  All Florida FTC teams are eligible to submit a volunteer t-shirt design no later than November 30, 2023 and the winner will be announced on by December 30, 2022.  The following are the detailed requirements for the t-shirt design:
+This is your opportunity to get a guaranteed invitation to the Florida Championship on March 1-2, 2024. All Florida FTC teams are eligible to submit a volunteer t-shirt design no later than November 30, 2023 and the winner will be announced on by December 30, 2022. The following are the detailed requirements for the t-shirt design:
 
 1. Design must be emailed to hans.wolf@verizon.net no later than midnight November 30, 2023.
 2. The design must be a high-resolution JPG file
@@ -26,7 +26,7 @@ The winner of the Florida Championship volunteer t-shirt design content will rec
 
 ## Florida Championship Advancement Criteria
 
-In early December, 2023 we will announce how many teams will advance from each League Tournament to the Florida Championship.  The approach we follow is similar to how FIRST determines how many teams advance to the World Championship from each region.  All leagues will receive a minimum of 2 advancement slots and the specific number of advancement slots is based on the Relative Size of each league.  This means that larger leagues will receive a larger number of advancement slots. Last season, the smallest Florida leagues received 3 team advancement slots and our largest league had 11 advancement slots.  Team’s can receive an advancement invitation by winning a Judge award or being a part of a winning robot alliance.  Please review chapter 6.0 for the details of the Advancement Criteria.
+In early December, 2023 we will announce how many teams will advance from each League Tournament to the Florida Championship. The approach we follow is similar to how FIRST determines how many teams advance to the World Championship from each region. All leagues will receive a minimum of 2 advancement slots and the specific number of advancement slots is based on the Relative Size of each league. This means that larger leagues will receive a larger number of advancement slots. Last season, the smallest Florida leagues received 3 team advancement slots and our largest league had 11 advancement slots. Team’s can receive an advancement invitation by winning a Judge award or being a part of a winning robot alliance. Please review chapter 6.0 for the details of the Advancement Criteria.
 
 ## About Florida FIRST
 

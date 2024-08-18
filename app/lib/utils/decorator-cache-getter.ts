@@ -6,7 +6,7 @@ export interface CachePropertyDescriptor<T, R> extends PropertyDescriptor {
 export function cache<T, R>(
   target: object,
   name: PropertyKey,
-  descriptor: CachePropertyDescriptor<T, R>
+  descriptor: CachePropertyDescriptor<T, R>,
 ) {
   const getter = descriptor.get;
 
