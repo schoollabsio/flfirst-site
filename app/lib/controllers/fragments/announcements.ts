@@ -62,7 +62,7 @@ export class Announcements implements Fragment {
   async render(params: { id: string }) {
     const renderer = new this.context.marked.Renderer();
     renderer.heading = (value) => {
-      return `<h${value.depth} class="${HeadingToTextSizeMapping[value.depth as keyof typeof HeadingToTextSizeMapping]} font-bold mb-2">${value.text}</h${value.depth}>`;
+      return `<h${value.depth} class="${HeadingToTextSizeMapping[value.depth as keyof typeof HeadingToTextSizeMapping]} font-bold">${value.text}</h${value.depth}>`;
     };
     renderer.list = (value) => {
       return `<ol class="list-decimal list-inside">${value.items.map((t) => `<li>${t.text}</li>`).join("\n")}</ol>`;

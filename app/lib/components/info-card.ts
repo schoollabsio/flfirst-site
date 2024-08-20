@@ -1,58 +1,61 @@
-export const InfoCardHeader = (title: string, secondaryContent?: string | null) => {
-  const secondary = `<h3 class="text-md text-gray-400 hover:text-gray-600 italic">
-      ${secondaryContent}
-    </h3>`;
-  return `
-    <div class="flex justify-between">
-        <h2 class="text-xl">${title}</h2>
-        ${secondaryContent ? secondary : ""}
-    </div>
-  `;
+import { Div, H2, H3, If } from "../utils/simple-components";
+
+export const InfoCardHeader = (
+  title: string,
+  secondaryContent?: string | null
+) => {
+  return Div({
+    class: "flex justify-between",
+  })(
+    H2({ class: "text-xl" })(title),
+    If(!!secondaryContent)(
+      H3({ class: "text-md text-gray-400 hover:text-gray-600 italic" })(
+        secondaryContent || ""
+      ),
+      ""
+    )
+  );
 };
 
-export const InfoCard = (children: string) => {
-  return `
-    <div class="flex flex-col bg-white p-4 border shadow-sm gap-4">
-        ${children}
-    </div>
-  `;
-};
+export const InfoCard = Div({
+  class: "flex flex-col bg-white p-4 border shadow-sm gap-4",
+});
 
-export const InfoCardContent = (children: string) => {
-  return `<div class="flex">${children}</div>`;
-};
+export const InfoCardContent = Div({
+    class: "flex",
+  });
 
-export const InfoCardColumn = (children: string) => {
-  return `
-    <div class="flex flex-col grow gap-2">
-          ${children}
-    </div>
-  `;
-};
+export const InfoCardColumn = Div({
+  class: "flex flex-col grow gap-2",
+});
 
 export const InfoCardFooter = (children: string) => {
-  return `
-    <div class="border-t p-4 border-gray-200">
-        <div class="flex justify-end">
-          ${children}
-        </div>
-    </div>
-  `;
+  return Div({
+    class: "border-t p-4 border-gray-200",
+  })(
+    Div({
+      class: "flex justify-end",
+    })(children)
+  );
 };
 
 export const InfoCardAttribute = (
   label: string,
   value: string | null,
-  shouldDisplay: boolean = true,
+  shouldDisplay: boolean = true
 ) => {
   if (!shouldDisplay) {
     return "";
   }
 
-  return `
-        <div class="flex flex-col">
-            <div class="text-gray-500 text-sm">${label.toUpperCase()}</div>
-            <div class="text-md">${value}</div>
-        </div>
-    `;
+  return Div({
+    class: "flex flex-col",
+  })(
+    Div({
+      class: "text-gray-500 text-sm",
+    })(label.toUpperCase()),
+    Div({
+      class: "text-md",
+    })(value || "")
+  );
 };

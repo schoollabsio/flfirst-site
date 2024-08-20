@@ -2,7 +2,16 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { Fragment } from "./interface";
 import dayjs from "dayjs";
 import { FirstEvent } from "../../models/internal/first-event";
-import { InfoCard, InfoCardAttribute, InfoCardColumn, InfoCardContent, InfoCardFooter, InfoCardHeader } from "../../components/info-card";
+import {
+  InfoCard,
+  InfoCardAttribute,
+  InfoCardColumn,
+  InfoCardContent,
+  InfoCardFooter,
+  InfoCardHeader,
+} from "../../components/info-card";
+import { Div, H2 } from "../../utils/simple-components";
+import { InfoCategory } from "../../components/info-category";
 
 export interface EventsTableContext {
   prisma: PrismaClient;
@@ -19,7 +28,7 @@ const EventRow = (event: FirstEvent) => {
     `;
 
   return InfoCard(`
-    ${InfoCardHeader(event.name, event.website && `<a href="${event.website}">${event.website?.replace(/(https?)\:\/\/(www\.)?/, '')}</a>`)}
+    ${InfoCardHeader(event.name, event.website && `<a href="${event.website}">${event.website?.replace(/(https?)\:\/\/(www\.)?/, "")}</a>`)}
     ${InfoCardContent(`
       ${InfoCardColumn(`
         ${InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY"))}
@@ -81,25 +90,25 @@ export class EventsTable implements Fragment {
     });
 
     events.sort((a, b) => {
-        if (!(!a.leagueName || !b.leagueName) && a.leagueName !== b.leagueName) {
-            return a.leagueName.localeCompare(b.leagueName);
-        }
-        return a.dateEnd.diff(b.dateEnd);
+      if (!(!a.leagueName || !b.leagueName) && a.leagueName !== b.leagueName) {
+        return a.leagueName.localeCompare(b.leagueName);
+      }
+      return a.dateEnd.diff(b.dateEnd);
     });
 
     const leagueCodeToName: Record<string, string> = events.reduce(
-        (acc: Record<string, string>, event: FirstEvent) => {
-            const code = event.leagueCode;
-            const name = event.leagueName;
-            if (code && name) {
-                return {
-                    ...acc,
-                    [code]: name,
-                };
-            }
-            return acc;
-        },
-        {},
+      (acc: Record<string, string>, event: FirstEvent) => {
+        const code = event.leagueCode;
+        const name = event.leagueName;
+        if (code && name) {
+          return {
+            ...acc,
+            [code]: name,
+          };
+        }
+        return acc;
+      },
+      {}
     );
 
     const leagueEvents: Record<string, FirstEvent[]> = events.reduce(
@@ -113,23 +122,12 @@ export class EventsTable implements Fragment {
           [code]: [...(acc[code] || []), event],
         };
       },
-      {},
+      {}
     );
 
     const leagueTables = Object.entries(leagueEvents).map(
-      ([leagueCode, events]) => {
-        const eventRows = events
-          .map((event: FirstEvent) => EventRow(event))
-          .join("\n");
-        return `
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-gray-600 mb-4 text-center">${leagueCodeToName[leagueCode]}</h2>
-                <div class="flex flex-col gap-4">
-                    ${eventRows}
-                </div>
-            </div>
-        `;
-      },
+      ([leagueCode, events]) =>
+        InfoCategory(leagueCodeToName[leagueCode], events.map(EventRow))
     );
 
     const tableBody = leagueTables.join("\n");

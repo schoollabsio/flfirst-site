@@ -9,25 +9,41 @@ import {
   InfoCardContent,
   InfoCardHeader,
 } from "../../components/info-card";
+import { A, Div, H2, If } from "../../utils/simple-components";
+import { InfoCategory } from "../../components/info-category";
 
 const DisplayLink = (url: string) => {
-  return `<a href="${url}" target="_blank">${url?.toLowerCase().replace(/(https?)\:\/\/(www\.)?/, "").replace(/\/$/, '')}</a>`;
-}
+  return `<a href="${url}" target="_blank">${url
+    ?.toLowerCase()
+    .replace(/(https?)\:\/\/(www\.)?/, "")
+    .replace(/\/$/, "")}</a>`;
+};
 
 const TeamRow = (team: FirstTeam) => {
-  return InfoCard(`
-      ${InfoCardHeader(`${team.number} - ${team.name}`, team.website && `<a href="${team.website}">${DisplayLink(team.website)}</a>`)}
-      ${InfoCardContent(`
-        ${InfoCardColumn(`
-          ${InfoCardAttribute("City", `${team.location.city}`)}
-          ${InfoCardAttribute("County", `${team.location.county}`)}
-        `)}
-        ${InfoCardColumn(`
-          ${InfoCardAttribute("Rookie Year", team.rookieYear)}
-          ${InfoCardAttribute("Event Ready?", !team.eventReady ? "Yes" : `No <a class="text-sm text-gray-400 hover:text-gray-600" href="${team.url}" target='_blank'>- Coaches, get ready now -></a>`)}
-        `)}
-      `)}
-    `);
+  return InfoCard(
+    InfoCardHeader(
+      `${team.number} - ${team.name}`,
+      If(!!team.website)(
+        A({ href: team.website || "" })(DisplayLink(team.website || "")),
+        ""
+      )
+    ),
+    InfoCardContent(
+      InfoCardColumn(
+        InfoCardAttribute("City", `${team.location.city}`),
+        InfoCardAttribute("County", `${team.location.county}`)
+      ),
+      InfoCardColumn(
+        InfoCardAttribute("Rookie Year", team.rookieYear),
+        InfoCardAttribute(
+          "Event Ready?",
+          !team.eventReady
+            ? "Yes"
+            : `No <a class="text-sm text-gray-400 hover:text-gray-600" href="${team.url}" target='_blank'>- Coaches, get ready now -></a>`
+        )
+      )
+    )
+  );
 };
 
 interface TeamsTableContext {
@@ -76,10 +92,34 @@ export class TeamsTable implements Fragment {
       } as FirstTeam;
     });
 
-    return `
-        <div class="flex flex-col max-w-fit mx-auto gap-4">
-            ${teams.map(TeamRow).join("\n")}
-        </div>
-    `;
+    const groupedTeams = teams.reduce((acc, team) => {
+      const leagueCode = team.league?.code || "Unknown";
+      if (!acc[leagueCode]) {
+        acc[leagueCode] = [];
+      }
+      acc[leagueCode].push(team);
+      return acc;
+    }, {} as Record<string, FirstTeam[]>);
+
+    const leagueCodeToName: Record<string, string> = teams.reduce(
+      (acc: Record<string, string>, team: FirstTeam) => {
+        const league = team.league;
+        if (!league) return acc;
+        return {
+          ...acc,
+          [league.code]: league.name,
+        };
+      },
+      {}
+    );
+
+    const leagueTable = Object.entries(groupedTeams)
+      .map(([leagueCode, teams]) => {
+        const leagueName = leagueCodeToName[leagueCode] || "Unknown";
+        return InfoCategory(leagueName, teams.map(TeamRow));
+      })
+      .join("\n");
+
+    return Div({ class: "flex flex-col max-w-prose mx-auto" })(leagueTable);
   }
 }
