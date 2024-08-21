@@ -19,8 +19,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import fs from "fs/promises";
-import { WhatIsFirst } from "../controllers/fragments/what-is-first";
-import { GetInvolved } from "../controllers/fragments/get-involved";
+import { About } from "../controllers/fragments/about";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -58,12 +57,8 @@ export class Context {
     return new Announcements(this);
   }
 
-  get whatIsFirst() {
-    return new WhatIsFirst(this);
-  }
-
-  get getInvolved() {
-    return new GetInvolved(this);
+  get about() {
+    return new About(this);
   }
 
   get fragments(): { [key: string]: Fragment } {
@@ -73,8 +68,7 @@ export class Context {
       teams: this.teamsTable,
       videos: this.videosTable,
       announcements: this.announcements,
-      ["what-is-first"]: this.whatIsFirst,
-      ["get-involved"]: this.getInvolved,
+      about: this.about,
     };
   }
 
