@@ -48,6 +48,12 @@ model FirstEvent {
   deadline  DateTime?
   url       String?
 
+  // capacity info
+  registered    Int?
+  capacity      Int?
+  waitlisted    Int?
+  waitlist_capacity Int?
+
   saved_at DateTime
 
   @@map("first_event")

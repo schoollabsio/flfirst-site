@@ -29,9 +29,13 @@ export interface RMEvent {
 
   registration: {
     open: boolean;
-    deadline?: Date;
-    url?: string;
-    closes_at?: Date;
-    opens_at?: Date;
+    deadline?: Date; // deprecated, use closes_at
+    url: string;
+    closes_at: Date;
+    opens_at: Date;
+    attending: unknown[];
+    capacity: number | null;
+    waitlist: unknown[];
+    waitlist_capacity: number | null;
   };
 }

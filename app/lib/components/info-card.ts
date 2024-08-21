@@ -9,7 +9,7 @@ export const InfoCardHeader = (
   })(
     H2({ class: "text-xl" })(title),
     If(!!secondaryContent)(
-      H3({ class: "text-md text-gray-400 hover:text-gray-600 italic" })(
+      H3({ class: "text-md text-gray-400 hover:text-blue-600 italic" })(
         secondaryContent || ""
       ),
       ""
@@ -26,7 +26,7 @@ export const InfoCardContent = Div({
   });
 
 export const InfoCardColumn = Div({
-  class: "flex flex-col grow gap-2",
+  class: "flex flex-col flex-1 gap-2",
 });
 
 export const InfoCardFooter = (children: string) => {

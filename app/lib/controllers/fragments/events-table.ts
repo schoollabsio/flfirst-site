@@ -10,39 +10,39 @@ import {
   InfoCardFooter,
   InfoCardHeader,
 } from "../../components/info-card";
-import { Div, H2 } from "../../utils/simple-components";
 import { InfoCategory } from "../../components/info-category";
+import { A, Div } from "../../utils/simple-components";
 
 export interface EventsTableContext {
   prisma: PrismaClient;
 }
 
 const EventRow = (event: FirstEvent) => {
-  const addressContent = `
-        <div>
-            <a class="underline text-blue-600 hover:text-blue-800" href="https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}" target="_blank">
-                <div>${event.locationAddress}</div>
-                <div>${event.locationCity} ${event.locationStateProvince}</div>
-            </a>
-        </div>
-    `;
+  const addressContent = Div({})(
+    A({ class: "hover:text-blue-600", href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`, target: "_blank" })(
+      Div({})(event.locationAddress),
+      Div({})(`${event.locationCity} ${event.locationStateProvince}`)
+    )
+  );
 
-  return InfoCard(`
-    ${InfoCardHeader(event.name, event.website && `<a href="${event.website}">${event.website?.replace(/(https?)\:\/\/(www\.)?/, "")}</a>`)}
-    ${InfoCardContent(`
-      ${InfoCardColumn(`
-        ${InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY"))}
-        ${InfoCardAttribute("Registration Window", `${event.opensAt?.format("MMM D, YYYY")} - ${event.closesAt?.format("MMM D, YYYY")}`, !!(event.opensAt && event.closesAt))}
-        ${InfoCardAttribute("Livestream", event.liveStreamUrl, !!event.liveStreamUrl)}
-      `)}
-      ${InfoCardColumn(`
-        ${InfoCardAttribute("Type", event.type)}
-        ${InfoCardAttribute("Address", addressContent)}
-        ${InfoCardAttribute("Venue", event.locationWebsite, !!event.locationWebsite)}
-      `)}
-    `)}
-    ${InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}">Register</a>`)}
-  `);
+  return InfoCard(
+    InfoCardHeader(event.name, event.website && `<a href="${event.website}">${event.website?.replace(/(https?)\:\/\/(www\.)?/, "")}</a>`),
+    InfoCardContent(
+      InfoCardColumn(
+        InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY")),
+        InfoCardAttribute("Registration Window", `${event.opensAt?.format("MMM D, YYYY")} - ${event.closesAt?.format("MMM D, YYYY")}`, !!(event.opensAt && event.closesAt)),
+        InfoCardAttribute("Livestream", event.liveStreamUrl, !!event.liveStreamUrl),
+        InfoCardAttribute("Registered", [event.registered, event.capacity].join(" / ")),
+        InfoCardAttribute("Waitlisted", [event.waitlisted, event.waitlist_capacity].join(" / ")),
+      ),
+      InfoCardColumn(
+        InfoCardAttribute("Type", event.type),
+        InfoCardAttribute("Address", addressContent),
+        InfoCardAttribute("Venue", event.locationWebsite, !!event.locationWebsite),
+      ),
+    ),
+    InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}">Register</a>`)
+  );
 };
 
 export class EventsTable implements Fragment {
@@ -85,6 +85,10 @@ export class EventsTable implements Fragment {
         open: event.open,
         deadline: event.deadline ? dayjs(event.deadline) : null,
         url: event.url,
+        registered: event.registered || 0,
+        capacity: event.capacity || 0,
+        waitlisted: event.waitlisted || 0,
+        waitlist_capacity: event.waitlist_capacity || 0,
         savedAt: dayjs(Number(event.saved_at)),
       };
     });

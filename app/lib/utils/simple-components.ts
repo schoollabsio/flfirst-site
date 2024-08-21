@@ -29,6 +29,8 @@ export const Script = Component("script");
 export const UnorderedList = Component("ul");
 export const ListItem = Component("li");
 export const Bold = Component("b");
+export const Svg = Component("svg");
+export const Path = Component("path");
 export const FontWeight = (fontWeight: number) =>
   Component("span")({ style: `font-weight: ${fontWeight};` });
 export const Sup = Component("sup");

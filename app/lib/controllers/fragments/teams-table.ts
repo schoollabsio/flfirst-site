@@ -9,8 +9,9 @@ import {
   InfoCardContent,
   InfoCardHeader,
 } from "../../components/info-card";
-import { A, Div, H2, If } from "../../utils/simple-components";
+import { A, Div, H2, If, Span } from "../../utils/simple-components";
 import { InfoCategory } from "../../components/info-category";
+import { ArrowRight } from "../../components/icons/arrow-right";
 
 const DisplayLink = (url: string) => {
   return `<a href="${url}" target="_blank">${url
@@ -39,7 +40,12 @@ const TeamRow = (team: FirstTeam) => {
           "Event Ready?",
           !team.eventReady
             ? "Yes"
-            : `No <a class="text-sm text-gray-400 hover:text-gray-600" href="${team.url}" target='_blank'>- Coaches, get ready now -></a>`
+            : Span({})(
+                A({
+                  href: team.url,
+                  target: "_blank",
+                })(Span()("No - "), Span({ class: "text-sm text-gray-400 hover:text-blue-600", })("Coaches, get ready now", ArrowRight({ class: "inline" })))
+              )
         )
       )
     )
@@ -92,14 +98,17 @@ export class TeamsTable implements Fragment {
       } as FirstTeam;
     });
 
-    const groupedTeams = teams.reduce((acc, team) => {
-      const leagueCode = team.league?.code || "Unknown";
-      if (!acc[leagueCode]) {
-        acc[leagueCode] = [];
-      }
-      acc[leagueCode].push(team);
-      return acc;
-    }, {} as Record<string, FirstTeam[]>);
+    const groupedTeams = teams.reduce(
+      (acc, team) => {
+        const leagueCode = team.league?.code || "Unknown";
+        if (!acc[leagueCode]) {
+          acc[leagueCode] = [];
+        }
+        acc[leagueCode].push(team);
+        return acc;
+      },
+      {} as Record<string, FirstTeam[]>
+    );
 
     const leagueCodeToName: Record<string, string> = teams.reduce(
       (acc: Record<string, string>, team: FirstTeam) => {

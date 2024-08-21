@@ -67,7 +67,10 @@ export class Announcements implements Fragment {
     renderer.list = (value) => {
       return `<ol class="list-decimal list-inside">${value.items.map((t) => `<li>${t.text}</li>`).join("\n")}</ol>`;
     };
-    const pages = await this.pages();
+    renderer.link = ({ href, title, text }) => {
+      return `<a href="${href}" class="text-gray-500 hover:text-blue-600">${text}</a>`;
+    }
+    const pages = (await this.pages()).reverse();
     const rendered = (
       await Promise.all(
         pages.map(

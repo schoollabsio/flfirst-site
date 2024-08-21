@@ -28,5 +28,9 @@ export interface FirstEvent {
   open: boolean;
   deadline: Dayjs | null;
   url: string | null;
+  registered: number;
+  capacity: number;
+  waitlisted: number;
+  waitlist_capacity: number,
   savedAt: Dayjs;
 }

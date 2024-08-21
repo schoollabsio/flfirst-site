@@ -85,6 +85,12 @@ export default class RegionManagerService {
         closes_at: dayjs(event.registration.closes_at).toDate(),
         opens_at: dayjs(event.registration.opens_at).toDate(),
 
+        // capacity info
+        capacity: event.registration.capacity,
+        registered: event.registration.attending.length,
+        waitlisted: event.registration.waitlist.length,
+        waitlist_capacity: event.registration.waitlist_capacity,
+
         saved_at: dayjs().tz("America/New_York").toDate(),
       };
     });
@@ -99,20 +105,38 @@ export default class RegionManagerService {
       },
     });
 
+    // FIXME: this is a naive implementation, we should be able to do this in a single query
+    const creates = events.filter((event) => !existing.some((e) => e.hash === event.hash));
+    const updates = events.filter((event) => existing.some((e) => e.hash === event.hash));
+    const deletes = existing.filter((e) => !events.some((event) => event.hash === e.hash));
+
     // issue updates for all the existing records
     await Promise.all([
       ...existing.map((event) => {
+        const update = updates.find((e) => e.hash === event.hash);
+        if (!update) {
+          console.error(`No update found for event ${event.code}!`);
+          return;
+        }
         return this.context.prisma.firstEvent.update({
           where: {
             id: event.id,
           },
-          data: event,
+          data: update,
         });
       }),
     ]);
 
     await this.context.prisma.firstEvent.createMany({
-      data: events,
+      data: creates,
+    });
+
+    await this.context.prisma.firstEvent.deleteMany({
+      where: {
+        hash: {
+          in: deletes.map((e) => e.hash),
+        },
+      },
     });
   }
 
