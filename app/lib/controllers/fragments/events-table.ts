@@ -11,7 +11,7 @@ import {
   InfoCardHeader,
 } from "../../components/info-card";
 import { InfoCategory } from "../../components/info-category";
-import { A, Div } from "../../utils/simple-components";
+import { A, Div, Span } from "../../utils/simple-components";
 
 export interface EventsTableContext {
   prisma: PrismaClient;
@@ -21,7 +21,7 @@ const EventRow = (event: FirstEvent) => {
   const addressContent = Div({})(
     A({ class: "hover:text-blue-600", href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`, target: "_blank" })(
       Div({})(event.locationAddress),
-      Div({})(`${event.locationCity} ${event.locationStateProvince}`)
+      Div({})(`${event.locationCity} ${event.locationStateProvince}`),
     )
   );
 
@@ -32,8 +32,20 @@ const EventRow = (event: FirstEvent) => {
         InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY")),
         InfoCardAttribute("Registration Window", `${event.opensAt?.format("MMM D, YYYY")} - ${event.closesAt?.format("MMM D, YYYY")}`, !!(event.opensAt && event.closesAt)),
         InfoCardAttribute("Livestream", event.liveStreamUrl, !!event.liveStreamUrl),
-        InfoCardAttribute("Registered", [event.registered, event.capacity].join(" / ")),
-        InfoCardAttribute("Waitlisted", [event.waitlisted, event.waitlist_capacity].join(" / ")),
+        InfoCardAttribute("Registered",
+          Span({})(
+            event.registered.toString(),
+            event.capacity > 0 ? Span({ class: "text-gray-400" })(` out of ${event.capacity}`) : "",
+          ),
+          event.registered > 0 || event.capacity > 0
+        ),
+        InfoCardAttribute("Waitlisted", 
+          Span({})(
+            event.registered.toString(),
+            Span({ class: "text-gray-400" })(` out of ${event.capacity}`),
+          ),
+          event.waitlisted > 0 || event.waitlistCapacity > 0
+        ),
       ),
       InfoCardColumn(
         InfoCardAttribute("Type", event.type),
@@ -41,7 +53,7 @@ const EventRow = (event: FirstEvent) => {
         InfoCardAttribute("Venue", event.locationWebsite, !!event.locationWebsite),
       ),
     ),
-    InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}">Register</a>`)
+    InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}" target="_blank">Register</a>`)
   );
 };
 
@@ -88,7 +100,7 @@ export class EventsTable implements Fragment {
         registered: event.registered || 0,
         capacity: event.capacity || 0,
         waitlisted: event.waitlisted || 0,
-        waitlist_capacity: event.waitlist_capacity || 0,
+        waitlistCapacity: event.waitlist_capacity || 0,
         savedAt: dayjs(Number(event.saved_at)),
       };
     });

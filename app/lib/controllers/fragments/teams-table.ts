@@ -65,6 +65,7 @@ export class TeamsTable implements Fragment {
         FROM first_teams
         ORDER BY website is null, CAST(number as INTEGER) ASC
     `) as Prisma.FirstTeamGetPayload<null>[];
+    console.log(persisted);
 
     const teams = persisted.map((team) => {
       const hasNoLeague = !team.league_code || !team.league_name;

@@ -49,7 +49,11 @@ export class About implements Fragment {
       return `<ol class="list-decimal list-inside">${value.items.map((t) => `<li>${t.text}</li>`).join("\n")}</ol>`;
     };
     renderer.link = ({ href, title, text }) => {
-      return `<a href="${href}" class="text-gray-500 hover:text-blue-600">${text}</a>`;
+      return `<a href="${href}" class="text-gray-500 underline hover:text-blue-600">${text}</a>`;
+    };
+    renderer.paragraph = (value) => {
+      const text = renderer.parser.parseInline(value.tokens);
+      return `<p class="[&:not(:last-child)]:mb-4">${text}</p>`;
     };
 
     const rendered = await this.context.marked(page, { renderer })

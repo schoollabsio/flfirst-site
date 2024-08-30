@@ -2,7 +2,7 @@ import { Dayjs } from "dayjs";
 
 export interface FirstTeam {
   name: string;
-  number: string;
+  number: number;
   location: {
     city: string;
     country: string;

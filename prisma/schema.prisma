@@ -63,7 +63,7 @@ model FirstTeam {
   id Int @id @default(autoincrement())
 
   name   String
-  number String
+  number Int @unique
 
   // location
   location_city           String

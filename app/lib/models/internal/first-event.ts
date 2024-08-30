@@ -31,6 +31,6 @@ export interface FirstEvent {
   registered: number;
   capacity: number;
   waitlisted: number;
-  waitlist_capacity: number,
+  waitlistCapacity: number,
   savedAt: Dayjs;
 }

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { FirstTeam, PrismaClient } from "@prisma/client";
 import { RMEventsResponse } from "../models/external/region-manager/responses/events/response";
 import { RMTeamsResponse } from "../models/external/region-manager/responses/teams/response";
 import { SimpleFetch } from "../utils/simple-fetch";
@@ -144,13 +144,82 @@ export default class RegionManagerService {
     const raw = await this.context.simpleFetch(this.teamsUri, {});
     const response = (await raw.json()) as RMTeamsResponse;
 
+    const teams = response.data.teams.map((team) => ({
+      // core
+      name: team.name,
+      number: team.number,
+
+      // location
+      location_city: team.location.city,
+      location_country: team.location.country,
+      location_state_province: team.location.state_province,
+      location_county: team.location.county,
+
+      // league
+      league_code: team.league?.code,
+      league_name: team.league?.name,
+      league_remote: team.league?.remote,
+      league_location: team.league?.location,
+
+      // other
+      rookie_year: team.rookie_year.toString(),
+      website: team.website,
+      event_ready: team.event_ready,
+      url: team.url,
+
+      // saved at
+      saved_at: dayjs().tz("America/New_York").toDate(),
+    }));
+
+    const existing = await this.context.prisma.firstTeam.findMany({
+      where: {
+        number: {
+          in: teams.map((team) => team.number),
+        },
+      },
+    });
+
+    // FIXME: this is a naive implementation, we should be able to do this in a single query
+    const creates = teams.filter((team) => !existing.some((e) => e.number === team.number));
+    const updates = teams.filter((team) => existing.some((e) => e.number === team.number));
+    const deletes = existing.filter((e) => !teams.some((team) => team.number === e.number));
+
+    // issue updates for all the existing records
+    await Promise.all([
+      ...existing.map((team) => {
+        const update = updates.find((t) => t.number === team.number);
+        if (!update) {
+          console.error(`No update found for team ${team.number}!`);
+          return;
+        }
+        return this.context.prisma.firstTeam.update({
+          where: {
+            id: team.id,
+          },
+          data: update,
+        });
+      }),
+    ]);
+
+    await this.context.prisma.firstTeam.createMany({
+      data: creates,
+    });
+
+    await this.context.prisma.firstTeam.deleteMany({
+      where: {
+        number: {
+          in: deletes.map((t) => t.number),
+        },
+      },
+    });
+
     await this.context.prisma.$transaction([
       this.context.prisma.firstTeam.deleteMany({}),
       this.context.prisma.firstTeam.createMany({
         data: response.data.teams.map((team) => ({
           // core
           name: team.name,
-          number: team.number.toString(),
+          number: team.number,
 
           // location
           location_city: team.location.city,

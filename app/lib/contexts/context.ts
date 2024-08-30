@@ -180,7 +180,9 @@ export class Context {
       timezone: "America/New_York",
       function: async () => {
         try {
+          this.logger.info("Syncing teams...");
           await this.regionManagerService.syncTeams();
+          this.logger.info("Finished syncing teams.");
         } catch (e) {
           this.logger.error(e);
         }
