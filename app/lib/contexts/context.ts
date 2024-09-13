@@ -20,6 +20,8 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import fs from "fs/promises";
 import { About } from "../controllers/fragments/about";
+import { Cover } from "../controllers/fragments/cover";
+import { Leagues } from "../controllers/fragments/leagues";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -61,14 +63,24 @@ export class Context {
     return new About(this);
   }
 
+  get cover() {
+    return new Cover(this);
+  }
+
+  get leagues() {
+    return new Leagues(this);
+  }
+
   get fragments(): { [key: string]: Fragment } {
     return {
       page: this.page,
       events: this.eventsTable,
       teams: this.teamsTable,
       videos: this.videosTable,
-      announcements: this.announcements,
+      newsletter: this.announcements,
       about: this.about,
+      cover: this.cover,
+      leagues: this.leagues,
     };
   }
 

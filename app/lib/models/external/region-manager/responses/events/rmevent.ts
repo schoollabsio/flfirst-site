@@ -27,7 +27,7 @@ export interface RMEvent {
     website?: string;
   };
 
-  registration: {
+  registration?: {
     open: boolean;
     deadline?: Date; // deprecated, use closes_at
     url: string;
@@ -37,5 +37,5 @@ export interface RMEvent {
     capacity: number | null;
     waitlist: unknown[];
     waitlist_capacity: number | null;
-  };
+  } | null;
 }

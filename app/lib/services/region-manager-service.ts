@@ -79,17 +79,17 @@ export default class RegionManagerService {
         location_website: event.location.website,
 
         // registration info
-        open: event.registration.open,
-        deadline: event.registration.deadline,
-        url: event.registration.url,
-        closes_at: dayjs(event.registration.closes_at).toDate(),
-        opens_at: dayjs(event.registration.opens_at).toDate(),
+        open: event.registration?.open || false,
+        deadline: event.registration?.deadline,
+        url: event.registration?.url,
+        closes_at: event.registration ? dayjs(event.registration.closes_at).toDate() : null,
+        opens_at: event.registration ? dayjs(event.registration.opens_at).toDate() : null,
 
         // capacity info
-        capacity: event.registration.capacity,
-        registered: event.registration.attending.length,
-        waitlisted: event.registration.waitlist.length,
-        waitlist_capacity: event.registration.waitlist_capacity,
+        capacity: event.registration?.capacity,
+        registered: event.registration?.attending.length,
+        waitlisted: event.registration?.waitlist.length,
+        waitlist_capacity: event.registration?.waitlist_capacity,
 
         saved_at: dayjs().tz("America/New_York").toDate(),
       };

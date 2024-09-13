@@ -7,3 +7,5 @@ Welcome! As you can probably see, some things have changed around here. This is 
 If you're looking for event info or registration, head on over to the [Events](/#events) page! If you're a coach curious to know if your team is event ready, check out the [Teams](/#teams) page.
 
 Thanks, and have a great season!
+
+_– Jeremy School_
