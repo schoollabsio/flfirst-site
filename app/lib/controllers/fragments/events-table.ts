@@ -17,6 +17,8 @@ export interface EventsTableContext {
   prisma: PrismaClient;
 }
 
+const formatWebsiteUrl = (url: string) => url.replace(/(https?):\/\/(www\.)?/, "")
+
 const EventRow = (event: FirstEvent) => {
   const addressContent = Div({})(
     A({ class: "hover:text-blue-600", href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`, target: "_blank" })(
@@ -26,7 +28,7 @@ const EventRow = (event: FirstEvent) => {
   );
 
   return InfoCard(
-    InfoCardHeader(event.name, event.website && `<a href="${event.website}">${event.website?.replace(/(https?)\:\/\/(www\.)?/, "")}</a>`),
+    InfoCardHeader(event.name, event.locationWebsite && `<a target="_blank" href="${event.locationWebsite}">${formatWebsiteUrl(event.locationWebsite)}</a>`),
     InfoCardContent(
       InfoCardColumn(
         InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY")),
@@ -50,7 +52,6 @@ const EventRow = (event: FirstEvent) => {
       InfoCardColumn(
         InfoCardAttribute("Type", event.type),
         InfoCardAttribute("Address", addressContent),
-        InfoCardAttribute("Venue", event.locationWebsite, !!event.locationWebsite),
       ),
     ),
     InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}" target="_blank">Register</a>`)

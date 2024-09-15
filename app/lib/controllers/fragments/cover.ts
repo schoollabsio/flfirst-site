@@ -1,8 +1,9 @@
 import fs from "fs/promises";
 import { join } from "path";
 import { Fragment } from "./interface";
-import { Div, H1, Paragraph } from "../../utils/simple-components";
+import { Div, H2, Img } from "../../utils/simple-components";
 import { marked } from "marked";
+import ContentPageHeading from "../../components/content-page-heading";
 
 const HeadingToTextSizeMapping = {
   1: "text-xl",
@@ -19,8 +20,8 @@ export class Cover implements Fragment {
     marked: typeof marked;
   }) {}
 
-  async page() {
-    const aboutPath = join(
+  get filepath() {
+    return join(
       __dirname,
       "..",
       "..",
@@ -29,8 +30,11 @@ export class Cover implements Fragment {
       "static",
       "cover.md",
     );
+  }
+
+  async page() {
     try {
-      const fileContents = await this.context.fs.readFile(aboutPath, "utf-8");
+      const fileContents = await this.context.fs.readFile(this.filepath, "utf-8");
       return fileContents;
     } catch (error) {
       console.error("Error loading about page:", error);
@@ -38,7 +42,7 @@ export class Cover implements Fragment {
     }
   }
 
-  async render(params: { id: string }) {
+  async content() {
     const page = await this.page();
 
     const renderer = new this.context.marked.Renderer();
@@ -56,10 +60,17 @@ export class Cover implements Fragment {
       return `<p class="[&:not(:last-child)]:mb-4">${text}</p>`;
     };
 
-    const rendered = await this.context.marked(page, { renderer })
+    const rendered = await this.context.marked(page, { renderer });
 
+    return rendered;
+  }
+
+  async render(params: { id: string }) {
     return Div({
-      class: "bg-white shadow-md p-4 max-w-prose mx-auto",
-    })(rendered || "No content found");
+      class: "bg-white shadow-md p-4 max-w-5xl mx-auto flex flex-col gap-2",
+    })(
+      ContentPageHeading({ text: "Florida FIRST Tech Challenge", image: "cover.jpg" }),
+      Div()(await this.content() || "No content found"),
+    );
   }
 }

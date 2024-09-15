@@ -22,6 +22,7 @@ import fs from "fs/promises";
 import { About } from "../controllers/fragments/about";
 import { Cover } from "../controllers/fragments/cover";
 import { Leagues } from "../controllers/fragments/leagues";
+import { Gallery } from "../controllers/fragments/gallery";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -71,6 +72,10 @@ export class Context {
     return new Leagues(this);
   }
 
+  get gallery() {
+    return new Gallery(this);
+  }
+
   get fragments(): { [key: string]: Fragment } {
     return {
       page: this.page,
@@ -81,6 +86,7 @@ export class Context {
       about: this.about,
       cover: this.cover,
       leagues: this.leagues,
+      gallery: this.gallery,
     };
   }
 
@@ -92,6 +98,44 @@ export class Context {
     const app = Fastify();
     app.register(fastifyStatic, {
       root: process.cwd() + "/static/",
+    });
+ 
+    // TODO: not found page
+    
+
+    app.get("/", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8')).replace("{{COVER_PAGE}}", "/cover.jpg");
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/leagues", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8')).replace("{{COVER_PAGE}}", "/leagues.jpg");
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/newsletter", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/events", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/teams", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/gallery", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
+    });
+
+    app.get("/about", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
     });
 
     app.get("/fragments/:id", async (request, reply) => {

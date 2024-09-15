@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Florida First Tech Challenge™</title>
+    <title>Florida First Tech Challenge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,9 +14,13 @@
     <script>
 
       const Pages = [
-      {
+        {
+          id: "cover",
+          title: "Cover",
+        },
+        {
           id: "newsletter",
-          title: "Newsletter"
+          title: "Newsletter",
         },
         {
           id: "leagues",
@@ -48,13 +52,14 @@
       };
 
       const loadPage = async () => {
-        const pageId = window.location.hash.substring(1) || "cover";
+        const pageId = window.location.pathname.substring(1) || "cover";
         document
           .querySelector("#page")
           .setAttribute(
             "page",
             pageId,
           );
+        // const [body] = document.getElementsByTagName("body");
         loadFragments(document);
 
         // highlight the current page in the navigation bar
@@ -85,9 +90,9 @@
     </script>
   </head>
 
-  <body class="bg-gray-100 flex flex-col min-h-screen pt-16 pb-20">
+  <body class="bg-gray-100 flex flex-col min-h-screen pt-16 pb-20 bg-cover bg-fixed">
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-md w-full fixed top-0" style="opacity: 0.85">
+    <nav class="bg-white shadow-md w-full fixed top-0 z-10">
       <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div class="relative flex items-center justify-between h-16">
           <!-- Logo -->
@@ -100,45 +105,39 @@
               />
             </a>
           </div>
-          <!-- Logo -->
-          <div class="flex-1 flex justify-center">
-            <div clss>
-              <a href="/" class="flex-shrink-0">
-                <img
-                  class="h-12 w-auto"
-                  src="robot.png"
-                  alt="Logo"
-                />
-              </a>
-            </div>
-          </div>
           <!-- Links -->
           <div class="flex-1 flex items-center justify-end">
             <div class="hidden sm:block">
               <div class="flex space-x-4">
                 <a
                   id="newsletter"
-                  href="#newsletter"
+                  href="/newsletter"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Newsletter</a
                 >
                 <a
                   id="leagues"
-                  href="#leagues"
+                  href="/leagues"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Leagues</a
                 >
                 <a
                   id="events"
-                  href="#events"
+                  href="/events"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Events</a
                 >
                 <a
                   id="teams"
-                  href="#teams"
+                  href="/teams"
                   class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
                   >Teams</a
+                >
+                <a
+                  id="gallery"
+                  href="/gallery"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Gallery</a
                 >
               </div>
             </div>
@@ -196,27 +195,33 @@
         <div class="px-2 pt-2 pb-3 space-y-1">
           <a
             id="newsletter-mobile"
-            href="#newsletter"
+            href="/newsletter"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Newsletter</a
           >
           <a
             id="leagues-mobile"
-            href="#leagues"
+            href="/leagues"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Leagues</a
           >
           <a
             id="events-mobile"
-            href="#events"
+            href="/events"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Events</a
           >
           <a
             id="events-mobile"
-            href="#teams"
+            href="/teams"
             class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
             >Teams</a
+          >
+          <a
+            id="gallery-mobile"
+            href="/gallery"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Gallery</a
           >
         </div>
       </div>
@@ -227,8 +232,8 @@
 
       <!-- Footer 0px -2px 6px -1px rgb(243 244 246 / var(--tw-bg-opacity)) -->
       <div
-        class="w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-gray-100 shadow-[0_-2px_6px_-1px_rgb(243,244,246,1)]"
-      >
+        class="w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
+        >
         <div class="flex-1"></div>
         <div class="flex-1">
           <a class="block w-full text-center" href="https://visitcentralflorida.org/" target="_blank">

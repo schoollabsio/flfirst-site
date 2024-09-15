@@ -7,7 +7,7 @@ export const InfoCardHeader = (
   return Div({
     class: "flex justify-between",
   })(
-    H2({ class: "text-xl" })(title),
+    H2({ class: "text-xl max-w-44" })(title),
     If(!!secondaryContent)(
       H3({ class: "text-md text-gray-400 hover:text-blue-600 italic" })(
         secondaryContent || ""
@@ -18,7 +18,7 @@ export const InfoCardHeader = (
 };
 
 export const InfoCard = Div({
-  class: "flex flex-col bg-white p-4 border shadow-sm gap-4",
+  class: "flex flex-col bg-white p-4 shadow-md gap-4",
 });
 
 export const InfoCardContent = Div({

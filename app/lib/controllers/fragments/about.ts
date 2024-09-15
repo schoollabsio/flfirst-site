@@ -19,8 +19,8 @@ export class About implements Fragment {
     marked: typeof marked;
   }) {}
 
-  async page() {
-    const aboutPath = join(
+  get filepath() {
+    return join(
       __dirname,
       "..",
       "..",
@@ -29,13 +29,39 @@ export class About implements Fragment {
       "static",
       "about.md",
     );
+  }
+
+  async page() {
     try {
-      const fileContents = await this.context.fs.readFile(aboutPath, "utf-8");
+      const fileContents = await this.context.fs.readFile(this.filepath, "utf-8");
       return fileContents;
     } catch (error) {
       console.error("Error loading about page:", error);
       return "";
     }
+  }
+
+  async content() {
+    const page = await this.page();
+
+    const renderer = new this.context.marked.Renderer();
+    renderer.heading = (value) => {
+      return `<h${value.depth} class="${HeadingToTextSizeMapping[value.depth as keyof typeof HeadingToTextSizeMapping]} font-bold">${value.text}</h${value.depth}>`;
+    };
+    renderer.list = (value) => {
+      return `<ol class="list-decimal list-inside">${value.items.map((t) => `<li>${t.text}</li>`).join("\n")}</ol>`;
+    };
+    renderer.link = ({ href, title, text }) => {
+      return `<a href="${href}" class="text-gray-500 underline hover:text-blue-600">${text}</a>`;
+    };
+    renderer.paragraph = (value) => {
+      const text = renderer.parser.parseInline(value.tokens);
+      return `<p class="[&:not(:last-child)]:mb-4">${text}</p>`;
+    };
+
+    const rendered = await this.context.marked(page, { renderer });
+
+    return rendered;
   }
 
   async render(params: { id: string }) {

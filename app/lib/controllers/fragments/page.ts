@@ -5,7 +5,7 @@ export class Page implements Fragment {
 
   async render(params: {}, query: { page: string }) {
     return `
-            <div fragment-id="${query.page}">
-        `;
+      <div fragment-id="${query.page}">
+    `;
   }
 }
