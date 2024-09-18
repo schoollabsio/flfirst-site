@@ -11,7 +11,7 @@ dayjs.extend(timezone);
 
 const DEFAULT_LEAGUE = {
   code: "FLDEF",
-  name: "Florida",
+  name: "Florida Region",
   remote: null,
   location: null,
 };
@@ -46,6 +46,7 @@ export default class RegionManagerService {
 
     const events = response.data.events.map((event) => {
       const league = event.league || DEFAULT_LEAGUE;
+      const isDefaultLeague = league.code === DEFAULT_LEAGUE.code;
       return {
         hash: btoa([event.code, event.season].join("|")),
 
@@ -63,10 +64,10 @@ export default class RegionManagerService {
         live_stream_url: event.live_stream_url,
 
         // league
-        league_code: league?.code,
-        league_name: league?.name,
-        league_remote: league?.remote,
-        league_location: league?.location,
+        league_code: league.code,
+        league_name: isDefaultLeague ? league.name : league.name + " League",
+        league_remote: league.remote,
+        league_location: league.location,
 
         // location info
         location_name: event.location.name,

@@ -27,6 +27,21 @@ const EventRow = (event: FirstEvent) => {
     )
   );
 
+  const isTooEarly = dayjs().isBefore(event.opensAt);
+  const isTooLate = dayjs().isAfter(event.closesAt);
+
+  let message = "Registration is unavailable for this event";
+
+  if (isTooEarly) {
+    message = "Registration for this event has not yet opened";
+  }
+
+  if (isTooLate) {
+    message = "Registration for this event has closed";
+  }
+
+  const isOpen = !isTooEarly && !isTooLate && event.url;
+
   return InfoCard(
     InfoCardHeader(event.name, event.locationWebsite && `<a target="_blank" href="${event.locationWebsite}">${formatWebsiteUrl(event.locationWebsite)}</a>`),
     InfoCardContent(
@@ -54,7 +69,14 @@ const EventRow = (event: FirstEvent) => {
         InfoCardAttribute("Address", addressContent),
       ),
     ),
-    InfoCardFooter(`<a class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" href="${event.url}" target="_blank">Register</a>`)
+    InfoCardFooter(
+      isOpen
+        ? A({ class: ["text-white", "py-2", "px-4", "rounded", "bg-blue-500 hover:bg-blue-700"].filter(x => !!x).join(" "), href: event.url || "", target: event.url ? "_blank" : "", })(`Register`)
+        : Div({ class: "flex items-center gap-4" })(
+          Span({ class: "italic text-gray-400" })(message),
+          Span({ class: ["text-white", "py-2", "px-4", "rounded", "bg-gray-400"].filter(x => !!x).join(" ") })(`Register`)
+        ),
+    )
   );
 };
 
@@ -142,10 +164,16 @@ export class EventsTable implements Fragment {
       {}
     );
 
-    const leagueTables = Object.entries(leagueEvents).map(
-      ([leagueCode, events]) =>
-        InfoCategory(leagueCodeToName[leagueCode], events.map(EventRow))
-    );
+    const leagueTables = Object.entries(leagueEvents)
+      .sort(([aLeagueCode], [bLeagueCode]) => {
+        if (aLeagueCode === 'FLDEF') return -1;
+        if (bLeagueCode === 'FLDEF') return 1;
+        return 0;
+      })
+      .map(
+        ([leagueCode, events]) =>
+          InfoCategory(leagueCodeToName[leagueCode], events.map(EventRow))
+      );
 
     const tableBody = leagueTables.join("\n");
 
