@@ -10,7 +10,7 @@ import { TeamsTable } from "../controllers/fragments/teams-table";
 import { Page } from "../controllers/fragments/page";
 import { VideosTable } from "../controllers/fragments/videos-table";
 import { Announcements } from "../controllers/fragments/announcements";
-import Scheduler, { Hourly } from "../utils/scheduler";
+import Scheduler, { Every, Hourly } from "../utils/scheduler";
 import RegionManagerService from "../services/region-manager-service";
 import ConfigureSimpleFetch from "../utils/simple-fetch";
 import { marked } from "marked";
@@ -216,7 +216,7 @@ export class Context {
     scheduler.add({
       runOnStart: true,
       allowConcurrent: false,
-      shouldRun: Hourly.onTheHour,
+      shouldRun: Every.minute,
       timezone: "America/New_York",
       function: async () => {
         try {
@@ -232,7 +232,7 @@ export class Context {
     scheduler.add({
       runOnStart: true,
       allowConcurrent: false,
-      shouldRun: Hourly.onTheHour,
+      shouldRun: Every.minute,
       timezone: "America/New_York",
       function: async () => {
         try {

@@ -101,6 +101,11 @@ export const onSecond = (second: number) => (now: Dayjs) =>
 const onMinute = (minute: number) => (now: Dayjs) =>
   now.minute() === minute && onSecond(0)(now);
 
+export const Every = {
+  minute: onSecond(0),
+  hour: onMinute(0),
+};
+
 export const Hourly = {
   onTheHour: (now: Dayjs) => onMinute(0)(now) && onSecond(0)(now),
   onMinute,
