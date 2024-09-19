@@ -38,7 +38,7 @@ const TeamRow = (team: FirstTeam) => {
         InfoCardAttribute("Rookie Year", team.rookieYear),
         InfoCardAttribute(
           "Event Ready?",
-          !team.eventReady
+          team.eventReady
             ? "Yes"
             : Span({})(
                 A({
