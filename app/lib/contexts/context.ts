@@ -23,6 +23,7 @@ import { About } from "../controllers/fragments/about";
 import { Cover } from "../controllers/fragments/cover";
 import { Leagues } from "../controllers/fragments/leagues";
 import { Gallery } from "../controllers/fragments/gallery";
+import { NotFound } from "../controllers/fragments/not-found";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -76,6 +77,10 @@ export class Context {
     return new Gallery(this);
   }
 
+  get notFound() {
+    return new NotFound(this);
+  }
+
   get fragments(): { [key: string]: Fragment } {
     return {
       page: this.page,
@@ -87,6 +92,7 @@ export class Context {
       cover: this.cover,
       leagues: this.leagues,
       gallery: this.gallery,
+      notfound: this.notFound,
     };
   }
 
@@ -96,12 +102,14 @@ export class Context {
 
   get app() {
     const app = Fastify();
+
+    app.setNotFoundHandler((request, reply) => {
+      reply.redirect('/notfound');
+    });
+
     app.register(fastifyStatic, {
       root: process.cwd() + "/static/",
     });
- 
-    // TODO: not found page
-    
 
     app.get("/", async (request, reply) => {
       const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8')).replace("{{COVER_PAGE}}", "/cover.jpg");
@@ -138,12 +146,22 @@ export class Context {
       reply.type('text/html').send(indexTemplate);
     });
 
+    app.get("/notfound", async (request, reply) => {
+      const indexTemplate = (await this.fs.readFile(__dirname + "/index-template.html", 'utf8'));
+      reply.type('text/html').send(indexTemplate);
+    });
+
     app.get("/fragments/:id", async (request, reply) => {
       const fragment = await this.fragmentController.load(
         request.params as Params,
         request.query as Query,
       );
       reply.send(fragment);
+    });
+
+    // LEGACY REDIRECTS
+    app.get("/index.php", async (request, reply) => {
+      reply.redirect('/');
     });
 
     return app;
