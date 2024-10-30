@@ -20,10 +20,11 @@ export interface EventsTableContext {
 const formatWebsiteUrl = (url: string) => url.replace(/(https?):\/\/(www\.)?/, "")
 
 const EventRow = (event: FirstEvent) => {
-  const addressContent = Div({})(
+  const venue = Div({})(
     A({ class: "hover:text-blue-600", href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`, target: "_blank" })(
+      Div({})(event.locationName),
       Div({})(event.locationAddress),
-      Div({})(`${event.locationCity} ${event.locationStateProvince}`),
+      Div({})(`${event.locationCity}, ${event.locationStateProvince}`),
     )
   );
 
@@ -46,8 +47,8 @@ const EventRow = (event: FirstEvent) => {
     InfoCardHeader(event.name, event.locationWebsite && `<a target="_blank" href="${event.locationWebsite}">${formatWebsiteUrl(event.locationWebsite)}</a>`),
     InfoCardContent(
       InfoCardColumn(
-        InfoCardAttribute("Date", event.dateEnd.format("MMM D, YYYY")),
-        InfoCardAttribute("Registration Window", `${event.opensAt?.format("MMM D, YYYY")} - ${event.closesAt?.format("MMM D, YYYY")}`, !!(event.opensAt && event.closesAt)),
+        InfoCardAttribute("Date", `<span class="local-time">${event.dateEnd.format("MMM D, YYYY")}</span>`),
+        InfoCardAttribute("Registration Window", `${event.opensAt ? `<span data-utc-time="${event.opensAt.toISOString()}" class="local-time mmmdyyyy">${event.opensAt.format("MMM D, YYYY")}</span>` : ''} - ${event.closesAt ? `<span data-utc-time="${event.closesAt.toISOString()}" class="local-time mmmdyyyy">${event.closesAt.format("MMM D, YYYY")}</span>` : ''}`, !!(event.opensAt && event.closesAt)),
         InfoCardAttribute("Livestream", event.liveStreamUrl, !!event.liveStreamUrl),
         InfoCardAttribute("Registered",
           Span({})(
@@ -66,7 +67,7 @@ const EventRow = (event: FirstEvent) => {
       ),
       InfoCardColumn(
         InfoCardAttribute("Type", event.type),
-        InfoCardAttribute("Address", addressContent),
+        InfoCardAttribute("Venue", venue),
       ),
     ),
     InfoCardFooter(
