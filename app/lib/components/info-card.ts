@@ -42,7 +42,7 @@ export const InfoCardFooter = (children: string) => {
 export const InfoCardAttribute = (
   label: string,
   value: string | null,
-  shouldDisplay: boolean = true
+  shouldDisplay: boolean = true,
 ) => {
   if (!shouldDisplay) {
     return "";
