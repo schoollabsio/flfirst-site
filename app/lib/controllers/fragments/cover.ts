@@ -15,26 +15,23 @@ const HeadingToTextSizeMapping = {
 };
 
 export class Cover implements Fragment {
-  constructor(private context: {
-    fs: typeof fs;
-    marked: typeof marked;
-  }) {}
+  constructor(
+    private context: {
+      fs: typeof fs;
+      marked: typeof marked;
+    },
+  ) {}
 
   get filepath() {
-    return join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "..",
-      "static",
-      "cover.md",
-    );
+    return join(__dirname, "..", "..", "..", "..", "static", "cover.md");
   }
 
   async page() {
     try {
-      const fileContents = await this.context.fs.readFile(this.filepath, "utf-8");
+      const fileContents = await this.context.fs.readFile(
+        this.filepath,
+        "utf-8",
+      );
       return fileContents;
     } catch (error) {
       console.error("Error loading about page:", error);
@@ -69,8 +66,11 @@ export class Cover implements Fragment {
     return Div({
       class: "bg-white shadow-md p-4 max-w-5xl mx-auto flex flex-col gap-2",
     })(
-      ContentPageHeading({ text: "Florida FIRST Tech Challenge", image: "cover.jpg" }),
-      Div()(await this.content() || "No content found"),
+      ContentPageHeading({
+        text: "Florida FIRST Tech Challenge",
+        image: "cover.jpg",
+      }),
+      Div()((await this.content()) || "No content found"),
     );
   }
 }

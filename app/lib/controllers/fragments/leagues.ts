@@ -15,26 +15,23 @@ const HeadingToTextSizeMapping = {
 };
 
 export class Leagues implements Fragment {
-  constructor(private context: {
-    fs: typeof fs;
-    marked: typeof marked;
-  }) {}
+  constructor(
+    private context: {
+      fs: typeof fs;
+      marked: typeof marked;
+    },
+  ) {}
 
   get filepath() {
-    return join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "..",
-      "static",
-      "leagues.md",
-    );
+    return join(__dirname, "..", "..", "..", "..", "static", "leagues.md");
   }
 
   async page() {
     try {
-      const fileContents = await this.context.fs.readFile(this.filepath, "utf-8");
+      const fileContents = await this.context.fs.readFile(
+        this.filepath,
+        "utf-8",
+      );
       return fileContents;
     } catch (error) {
       console.error("Error loading about page:", error);
@@ -70,7 +67,7 @@ export class Leagues implements Fragment {
       class: "bg-white shadow-md p-4 max-w-5xl mx-auto flex flex-col gap-2",
     })(
       ContentPageHeading({ text: "Leagues", image: "leagues.jpg" }),
-      Div()(await this.content() || "No content found"),
+      Div()((await this.content()) || "No content found"),
     );
   }
 }

@@ -2,7 +2,7 @@ import { Div, H2, H3, If } from "../utils/simple-components";
 
 export const InfoCardHeader = (
   title: string,
-  secondaryContent?: string | null
+  secondaryContent?: string | null,
 ) => {
   return Div({
     class: "flex justify-between",
@@ -10,10 +10,10 @@ export const InfoCardHeader = (
     H2({ class: "text-xl max-w-44" })(title),
     If(!!secondaryContent)(
       H3({ class: "text-md text-gray-400 hover:text-blue-600 italic" })(
-        secondaryContent || ""
+        secondaryContent || "",
       ),
-      ""
-    )
+      "",
+    ),
   );
 };
 
@@ -22,8 +22,8 @@ export const InfoCard = Div({
 });
 
 export const InfoCardContent = Div({
-    class: "flex",
-  });
+  class: "flex",
+});
 
 export const InfoCardColumn = Div({
   class: "flex flex-col flex-1 gap-2",
@@ -35,7 +35,7 @@ export const InfoCardFooter = (children: string) => {
   })(
     Div({
       class: "flex justify-end",
-    })(children)
+    })(children),
   );
 };
 
@@ -56,6 +56,6 @@ export const InfoCardAttribute = (
     })(label.toUpperCase()),
     Div({
       class: "text-md",
-    })(value || "")
+    })(value || ""),
   );
 };

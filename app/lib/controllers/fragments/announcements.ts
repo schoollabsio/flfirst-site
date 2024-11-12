@@ -69,7 +69,7 @@ export class Announcements implements Fragment {
     };
     renderer.link = ({ href, title, text }) => {
       return `<a href="${href}" class="text-gray-500 underline hover:text-blue-600">${text}</a>`;
-    }
+    };
     const pages = (await this.pages()).reverse();
     const rendered = (
       await Promise.all(

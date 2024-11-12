@@ -17,15 +17,20 @@ export interface EventsTableContext {
   prisma: PrismaClient;
 }
 
-const formatWebsiteUrl = (url: string) => url.replace(/(https?):\/\/(www\.)?/, "")
+const formatWebsiteUrl = (url: string) =>
+  url.replace(/(https?):\/\/(www\.)?/, "");
 
 const EventRow = (event: FirstEvent) => {
   const venue = Div({})(
-    A({ class: "hover:text-blue-600", href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`, target: "_blank" })(
+    A({
+      class: "hover:text-blue-600",
+      href: `https://www.google.com/maps/search/?api=1&query=${[event.locationAddress, event.locationCity, event.locationStateProvince, event.locationZip].join("+")}`,
+      target: "_blank",
+    })(
       Div({})(event.locationName),
       Div({})(event.locationAddress),
       Div({})(`${event.locationCity}, ${event.locationStateProvince}`),
-    )
+    ),
   );
 
   const isTooEarly = dayjs().isBefore(event.opensAt);
@@ -44,25 +49,44 @@ const EventRow = (event: FirstEvent) => {
   const isOpen = !isTooEarly && !isTooLate && event.url;
 
   return InfoCard(
-    InfoCardHeader(event.name, event.locationWebsite && `<a target="_blank" href="${event.locationWebsite}">${formatWebsiteUrl(event.locationWebsite)}</a>`),
+    InfoCardHeader(
+      event.name,
+      event.locationWebsite &&
+        `<a target="_blank" href="${event.locationWebsite}">${formatWebsiteUrl(event.locationWebsite)}</a>`,
+    ),
     InfoCardContent(
       InfoCardColumn(
-        InfoCardAttribute("Date", `<span class="local-time">${event.dateEnd.format("MMM D, YYYY")}</span>`),
-        InfoCardAttribute("Registration Window", `${event.opensAt ? `<span data-utc-time="${event.opensAt.toISOString()}" class="local-time mmmdyyyy">${event.opensAt.format("MMM D, YYYY")}</span>` : ''} - ${event.closesAt ? `<span data-utc-time="${event.closesAt.toISOString()}" class="local-time mmmdyyyy">${event.closesAt.format("MMM D, YYYY")}</span>` : ''}`, !!(event.opensAt && event.closesAt)),
-        InfoCardAttribute("Livestream", event.liveStreamUrl, !!event.liveStreamUrl),
-        InfoCardAttribute("Registered",
+        InfoCardAttribute(
+          "Date",
+          `<span class="local-time">${event.dateEnd.format("MMM D, YYYY")}</span>`,
+        ),
+        InfoCardAttribute(
+          "Registration Window",
+          `${event.opensAt ? `<span data-utc-time="${event.opensAt.toISOString()}" class="local-time mmmdyyyy">${event.opensAt.format("MMM D, YYYY")}</span>` : ""} - ${event.closesAt ? `<span data-utc-time="${event.closesAt.toISOString()}" class="local-time mmmdyyyy">${event.closesAt.format("MMM D, YYYY")}</span>` : ""}`,
+          !!(event.opensAt && event.closesAt),
+        ),
+        InfoCardAttribute(
+          "Livestream",
+          event.liveStreamUrl,
+          !!event.liveStreamUrl,
+        ),
+        InfoCardAttribute(
+          "Registered",
           Span({})(
             event.registered.toString(),
-            event.capacity > 0 ? Span({ class: "text-gray-400" })(` out of ${event.capacity}`) : "",
+            event.capacity > 0
+              ? Span({ class: "text-gray-400" })(` out of ${event.capacity}`)
+              : "",
           ),
-          event.registered > 0 || event.capacity > 0
+          event.registered > 0 || event.capacity > 0,
         ),
-        InfoCardAttribute("Waitlisted", 
+        InfoCardAttribute(
+          "Waitlisted",
           Span({})(
             event.registered.toString(),
             Span({ class: "text-gray-400" })(` out of ${event.capacity}`),
           ),
-          event.waitlisted > 0 || event.waitlistCapacity > 0
+          event.waitlisted > 0 || event.waitlistCapacity > 0,
         ),
       ),
       InfoCardColumn(
@@ -72,12 +96,28 @@ const EventRow = (event: FirstEvent) => {
     ),
     InfoCardFooter(
       isOpen
-        ? A({ class: ["text-white", "py-2", "px-4", "rounded", "bg-blue-500 hover:bg-blue-700"].filter(x => !!x).join(" "), href: event.url || "", target: event.url ? "_blank" : "", })(`Register`)
+        ? A({
+            class: [
+              "text-white",
+              "py-2",
+              "px-4",
+              "rounded",
+              "bg-blue-500 hover:bg-blue-700",
+            ]
+              .filter((x) => !!x)
+              .join(" "),
+            href: event.url || "",
+            target: event.url ? "_blank" : "",
+          })(`Register`)
         : Div({ class: "flex items-center gap-4" })(
-          Span({ class: "italic text-gray-400" })(message),
-          Span({ class: ["text-white", "py-2", "px-4", "rounded", "bg-gray-400"].filter(x => !!x).join(" ") })(`Register`)
-        ),
-    )
+            Span({ class: "italic text-gray-400" })(message),
+            Span({
+              class: ["text-white", "py-2", "px-4", "rounded", "bg-gray-400"]
+                .filter((x) => !!x)
+                .join(" "),
+            })(`Register`),
+          ),
+    ),
   );
 };
 
@@ -148,7 +188,7 @@ export class EventsTable implements Fragment {
         }
         return acc;
       },
-      {}
+      {},
     );
 
     const leagueEvents: Record<string, FirstEvent[]> = events.reduce(
@@ -162,18 +202,17 @@ export class EventsTable implements Fragment {
           [code]: [...(acc[code] || []), event],
         };
       },
-      {}
+      {},
     );
 
     const leagueTables = Object.entries(leagueEvents)
       .sort(([aLeagueCode], [bLeagueCode]) => {
-        if (aLeagueCode === 'FLDEF') return -1;
-        if (bLeagueCode === 'FLDEF') return 1;
+        if (aLeagueCode === "FLDEF") return -1;
+        if (bLeagueCode === "FLDEF") return 1;
         return 0;
       })
-      .map(
-        ([leagueCode, events]) =>
-          InfoCategory(leagueCodeToName[leagueCode], events.map(EventRow))
+      .map(([leagueCode, events]) =>
+        InfoCategory(leagueCodeToName[leagueCode], events.map(EventRow)),
       );
 
     const tableBody = leagueTables.join("\n");

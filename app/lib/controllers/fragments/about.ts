@@ -14,26 +14,23 @@ const HeadingToTextSizeMapping = {
 };
 
 export class About implements Fragment {
-  constructor(private context: {
-    fs: typeof fs;
-    marked: typeof marked;
-  }) {}
+  constructor(
+    private context: {
+      fs: typeof fs;
+      marked: typeof marked;
+    },
+  ) {}
 
   get filepath() {
-    return join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "..",
-      "static",
-      "about.md",
-    );
+    return join(__dirname, "..", "..", "..", "..", "static", "about.md");
   }
 
   async page() {
     try {
-      const fileContents = await this.context.fs.readFile(this.filepath, "utf-8");
+      const fileContents = await this.context.fs.readFile(
+        this.filepath,
+        "utf-8",
+      );
       return fileContents;
     } catch (error) {
       console.error("Error loading about page:", error);
@@ -82,7 +79,7 @@ export class About implements Fragment {
       return `<p class="[&:not(:last-child)]:mb-4">${text}</p>`;
     };
 
-    const rendered = await this.context.marked(page, { renderer })
+    const rendered = await this.context.marked(page, { renderer });
 
     return Div({
       class: "bg-white shadow-md p-4 max-w-prose mx-auto",

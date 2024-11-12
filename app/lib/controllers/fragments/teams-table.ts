@@ -26,13 +26,13 @@ const TeamRow = (team: FirstTeam) => {
       `${team.number} - ${team.name}`,
       If(!!team.website)(
         A({ href: team.website || "" })(DisplayLink(team.website || "")),
-        ""
-      )
+        "",
+      ),
     ),
     InfoCardContent(
       InfoCardColumn(
         InfoCardAttribute("City", `${team.location.city}`),
-        InfoCardAttribute("County", `${team.location.county}`)
+        InfoCardAttribute("County", `${team.location.county}`),
       ),
       InfoCardColumn(
         InfoCardAttribute("Rookie Year", team.rookieYear),
@@ -44,11 +44,17 @@ const TeamRow = (team: FirstTeam) => {
                 A({
                   href: team.url,
                   target: "_blank",
-                })(Span()("No - "), Span({ class: "text-sm text-gray-400 hover:text-blue-600", })("Coaches, get ready now", ArrowRight({ class: "inline" })))
-              )
-        )
-      )
-    )
+                })(
+                  Span()("No - "),
+                  Span({ class: "text-sm text-gray-400 hover:text-blue-600" })(
+                    "Coaches, get ready now",
+                    ArrowRight({ class: "inline" }),
+                  ),
+                ),
+              ),
+        ),
+      ),
+    ),
   );
 };
 
@@ -107,7 +113,7 @@ export class TeamsTable implements Fragment {
         acc[leagueCode].push(team);
         return acc;
       },
-      {} as Record<string, FirstTeam[]>
+      {} as Record<string, FirstTeam[]>,
     );
 
     const leagueCodeToName: Record<string, string> = teams.reduce(
@@ -119,7 +125,7 @@ export class TeamsTable implements Fragment {
           [league.code]: league.name,
         };
       },
-      {}
+      {},
     );
 
     const leagueTable = Object.entries(groupedTeams)

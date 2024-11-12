@@ -83,8 +83,12 @@ export default class RegionManagerService {
         open: event.registration?.open || false,
         deadline: event.registration?.deadline,
         url: event.registration?.url,
-        closes_at: event.registration ? dayjs(event.registration.closes_at).toDate() : null,
-        opens_at: event.registration ? dayjs(event.registration.opens_at).toDate() : null,
+        closes_at: event.registration
+          ? dayjs(event.registration.closes_at).toDate()
+          : null,
+        opens_at: event.registration
+          ? dayjs(event.registration.opens_at).toDate()
+          : null,
 
         // capacity info
         capacity: event.registration?.capacity,
@@ -107,9 +111,15 @@ export default class RegionManagerService {
     });
 
     // FIXME: this is a naive implementation, we should be able to do this in a single query
-    const creates = events.filter((event) => !existing.some((e) => e.hash === event.hash));
-    const updates = events.filter((event) => existing.some((e) => e.hash === event.hash));
-    const deletes = existing.filter((e) => !events.some((event) => event.hash === e.hash));
+    const creates = events.filter(
+      (event) => !existing.some((e) => e.hash === event.hash),
+    );
+    const updates = events.filter((event) =>
+      existing.some((e) => e.hash === event.hash),
+    );
+    const deletes = existing.filter(
+      (e) => !events.some((event) => event.hash === e.hash),
+    );
 
     // issue updates for all the existing records
     await Promise.all([
@@ -181,9 +191,15 @@ export default class RegionManagerService {
     });
 
     // FIXME: this is a naive implementation, we should be able to do this in a single query
-    const creates = teams.filter((team) => !existing.some((e) => e.number === team.number));
-    const updates = teams.filter((team) => existing.some((e) => e.number === team.number));
-    const deletes = existing.filter((e) => !teams.some((team) => team.number === e.number));
+    const creates = teams.filter(
+      (team) => !existing.some((e) => e.number === team.number),
+    );
+    const updates = teams.filter((team) =>
+      existing.some((e) => e.number === team.number),
+    );
+    const deletes = existing.filter(
+      (e) => !teams.some((team) => team.number === e.number),
+    );
 
     // issue updates for all the existing records
     await Promise.all([
