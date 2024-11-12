@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "start": "prisma migrate deploy && remix-serve ./build/server/index.js",
+    "start": "prisma migrate deploy && PORT=80 remix-serve ./build/server/index.js",
     "dev": "prisma migrate deploy && remix vite:dev",
     "prettier": "prettier --write .",
     "ci:build": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD) .",
