@@ -1,7 +1,11 @@
 {
+  "name": "flfirst-site",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
   "scripts": {
-    "start": "prisma migrate deploy && ts-node app/app.ts",
-    "dev": "prisma migrate deploy && nodemon --exec ts-node app/app.ts",
+    "start": "prisma migrate deploy && remix-serve ./build/server/index.js",
+    "dev": "prisma migrate deploy && remix vite:dev",
     "prettier": "prettier --write .",
     "ci:build": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD) .",
     "ci:build:local": "docker build -t registry.digitalocean.com/schoollabsio/flfirst-site:local .",
@@ -9,7 +13,9 @@
     "compose:build": "docker-compose -f base.yml -f local.yml up --build",
     "compose:generate:staging": "./generate-env-yml.sh staging-template.yml staging.yml",
     "compose:sync:staging": "rsync -cv base.yml staging.yml deploy-staging.sh root@staging.schoollabs.io:~/flfirst-site",
-    "push:image": "docker push registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD)"
+    "push:image": "docker push registry.digitalocean.com/schoollabsio/flfirst-site:$(git rev-parse --short HEAD)",
+    "build": "remix vite:build",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint ."
   },
   "dependencies": {
     "@fastify/static": "8.0.2",
