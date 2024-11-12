@@ -24,7 +24,7 @@
     "@remix-run/node": "2.14.0",
     "@remix-run/react": "2.14.0",
     "@remix-run/serve": "2.14.0",
-    "better-sqlite3": "11.3.0",
+    "better-sqlite3": "11.5.0",
     "dayjs": "1.11.13",
     "dotenv": "16.4.5",
     "fastify": "5.0.0",
