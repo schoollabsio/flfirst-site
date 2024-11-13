@@ -256,7 +256,7 @@ export default function Events() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="w-full md:min-w-[750px]">
+    <div className="w-full md:min-w-[750px] md:max-w-prose">
       <div className="w-full flex flex-col items-center">
         <input
           type="text"
