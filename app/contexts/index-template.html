@@ -1,0 +1,276 @@
+<html>
+  <head>
+    <title>Florida First Tech Challenge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
+    <script>
+      dayjs.extend(window.dayjs_plugin_utc);
+
+      const Pages = [
+        {
+          id: "cover",
+          title: "Cover",
+        },
+        {
+          id: "newsletter",
+          title: "Newsletter",
+        },
+        {
+          id: "leagues",
+          title: "Leagues",
+        },
+        {
+          id: "events",
+          title: "Events",
+        },
+        {
+          id: "teams",
+          title: "Teams",
+        },
+      ];
+
+      const loadFragments = async (el) => {
+        const elements = el.querySelectorAll("[fragment-id]");
+        Array.from(elements).map(async (e) => {
+          const attributes = Array.from(e.attributes)
+            .map((attr) => ({ name: attr.name, value: attr.value }))
+            .filter((attr) => attr.name !== "fragment-id");
+          const response = await fetch(
+            `/fragments/${e.getAttribute("fragment-id")}?${attributes.map((attr) => `${attr.name}=${attr.value}`).join("&")}`,
+          );
+          const html = await response.text();
+          e.innerHTML = html;
+          // Convert all elements with the class .local-time to the user's timezone
+          const localTimeElements = e.querySelectorAll(".local-time");
+          localTimeElements.forEach((element) => {
+            const utcTime = element.getAttribute("data-utc-time");
+            if (utcTime) {
+              let localTime = dayjs.utc(utcTime).local();
+              if (element.classList.contains("mmmdyyyy")) {
+                localTime = localTime.format("MMM D, YYYY");
+              } else {
+                localTime = localTime.format("YYYY-MM-DD HH:mm:ss");
+              }
+              element.textContent = localTime;
+            }
+          });
+          loadFragments(e);
+        });
+      };
+
+      const loadPage = async () => {
+        const pageId = window.location.pathname.substring(1) || "cover";
+        document.querySelector("#page").setAttribute("page", pageId);
+        // const [body] = document.getElementsByTagName("body");
+        loadFragments(document);
+
+        // highlight the current page in the navigation bar
+        const element = document.getElementById(pageId);
+        Pages.forEach((page) => {
+          const unselected = document.getElementById(page.id);
+          if (unselected && unselected.id !== pageId) {
+            unselected.classList.remove("bg-gray-200");
+          }
+        });
+        element.classList.add("bg-gray-200");
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const menuButton = document.getElementById("menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        menuButton.addEventListener("click", (e) => {
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        loadPage();
+      });
+
+      window.addEventListener("hashchange", () => {
+        loadPage();
+      });
+    </script>
+  </head>
+
+  <body
+    class="bg-gray-100 flex flex-col min-h-screen pt-16 pb-20 bg-cover bg-fixed"
+  >
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md w-full fixed top-0 z-10">
+      <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div class="relative flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div class="flex-1 flex items-center">
+            <a href="/" class="flex-shrink-0">
+              <img
+                class="h-8 w-auto"
+                src="FIRSTTech_iconHorz_RGB.png"
+                alt="Logo"
+              />
+            </a>
+          </div>
+          <!-- Links -->
+          <div class="flex-1 flex items-center justify-end">
+            <div class="hidden sm:block">
+              <div class="flex space-x-4">
+                <a
+                  id="newsletter"
+                  href="/newsletter"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Newsletter</a
+                >
+                <a
+                  id="leagues"
+                  href="/leagues"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Leagues</a
+                >
+                <a
+                  id="events"
+                  href="/events"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Events</a
+                >
+                <a
+                  id="teams"
+                  href="/teams"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Teams</a
+                >
+                <a
+                  id="gallery"
+                  href="/gallery"
+                  class="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                  >Gallery</a
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Mobile Menu </div>Button -->
+          <div
+            id="menu-button"
+            class="absolute inset-y-0 right-0 flex items-center sm:hidden"
+          >
+            <button
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Open main menu</span>
+              <!-- Icon when menu is closed -->
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+              <!-- Icon when menu is open -->
+              <svg
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Mobile Menu -->
+      <div class="hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a
+            id="newsletter-mobile"
+            href="/newsletter"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Newsletter</a
+          >
+          <a
+            id="leagues-mobile"
+            href="/leagues"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Leagues</a
+          >
+          <a
+            id="events-mobile"
+            href="/events"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Events</a
+          >
+          <a
+            id="events-mobile"
+            href="/teams"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Teams</a
+          >
+          <a
+            id="gallery-mobile"
+            href="/gallery"
+            class="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+            >Gallery</a
+          >
+        </div>
+      </div>
+    </nav>
+    <!-- Centered Content -->
+    <div class="flex items-center justify-center pt-5 px-5">
+      <div id="page" fragment-id="page" page="events" class="min-w-full"></div>
+
+      <!-- Footer 0px -2px 6px -1px rgb(243 244 246 / var(--tw-bg-opacity)) -->
+      <div
+        class="w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
+      >
+        <div class="flex-1"></div>
+        <div class="flex-1">
+          <a
+            class="block w-full text-center"
+            href="https://visitcentralflorida.org/"
+            target="_blank"
+          >
+            <img
+              class="h-8 w-auto inline-block"
+              src="VisitCF_4cHorLogo-png.png"
+              alt="Visit Central Florida"
+            />
+          </a>
+        </div>
+        <div class="flex-1 text-right">
+          <a href="/about" class="text-gray-400 hover:text-blue-500">
+            About this site
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

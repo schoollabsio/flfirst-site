@@ -134,3 +134,8 @@ dist
 local.yml
 
 prisma/data/
+node_modules
+
+/.cache
+.env
+prisma/data/dev.db
