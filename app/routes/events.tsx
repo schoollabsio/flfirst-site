@@ -2,6 +2,8 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Prisma, PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import {
   InfoCard,
   InfoCardAttribute,
@@ -13,6 +15,9 @@ import {
 import { FirstEvent } from "~/models/internal/first-event";
 import { InfoCategory } from "~/components/info-category";
 import { useState } from "react";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const prisma = new PrismaClient();
 
@@ -73,7 +78,7 @@ const EventRow = ({ event }: { event: FirstEvent }) => {
             label="Date"
             value={
               <span className="local-time">
-                {dayjs(event.dateEnd).format("MMM D, YYYY")}
+                {dayjs(event.dateEnd).utc().format("MMM D, YYYY")}
               </span>
             }
           />

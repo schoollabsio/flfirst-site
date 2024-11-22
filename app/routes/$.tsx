@@ -1,3 +1,12 @@
+import { redirect, LoaderFunctionArgs } from "@remix-run/node";
+
+export function loader({ params }: LoaderFunctionArgs) {
+  if (params["*"] === "index.php") {
+    return redirect("/");
+  }
+  return null;
+}
+
 export default function NotFound() {
   return (
     <div className="flex flex-col md:flex-row gap-4">
