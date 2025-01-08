@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-d4vcKfGz.js";import{M as n}from"./markdown-pxkRYKB4.js";const a=`# Introducing the all new Florida First Tech Challenge website!
+import{j as e}from"./jsx-runtime-6y6M2hOi.js";import{M as n}from"./markdown-B1g3Eey8.js";const a=`# Introducing the all new Florida First Tech Challenge website!
 
 _August 21st, 2024_
 
@@ -53,13 +53,13 @@ The Florida FTC season theme this year is Robot Design. Therefore, this newslett
 
 The following are the topics covered in this Florida FTC newsletter:
 
-1.                   New Florida FIRST Tech Challenge Website (www.flfirst.org)
+1.                    New Florida FIRST Tech Challenge Website (www.flfirst.org)
 
-2.                   AJ’s Tech Corner
+2.                    AJ’s Tech Corner
 
-3.                   SDK 10.1 Released: Use REV Hardware Client to Update
+3.                    SDK 10.1 Released: Use REV Hardware Client to Update
 
-4.                   Robot Design Ideas
+4.                    Robot Design Ideas
 
 ## Newsletter Details
 
