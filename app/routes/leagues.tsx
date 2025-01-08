@@ -17,10 +17,7 @@ export const meta: MetaFunction = () => {
 export default function Leagues() {
   return (
     <div className="bg-white shadow-md p-4 max-w-5xl mx-auto flex flex-col gap-2">
-      <ContentPageHeading
-        text="Florida FIRST Tech Challenge"
-        image="leagues.jpg"
-      />
+      <ContentPageHeading text="Leagues" image="leagues.jpg" />
       <Markdown markdown={leagues} />
     </div>
   );

@@ -5,6 +5,7 @@ import NewsletterSep11 from "./static/newsletters/2024-09-11_email.md?raw";
 import NewsletterSep21 from "./static/newsletters/2024-09-21_newsletter-5.md?raw";
 import NewsletterOct17 from "./static/newsletters/2024-10-17_newsletter-6.md?raw";
 import NewsletterOct31 from "./static/newsletters/2024-10-31_newsletter-7.md?raw";
+import Newsletter2025Jan6 from "./static/newsletters/2025-01-06_newsletter-12.md?raw";
 
 export const meta: MetaFunction = () => {
   return [
@@ -32,6 +33,7 @@ const MarkdownPost = ({ content }: { content: string }) => {
 export default function Newsletter() {
   return (
     <div className="flex flex-col max-w-prose mx-auto gap-4">
+      <MarkdownPost content={Newsletter2025Jan6} />
       <MarkdownPost content={NewsletterOct31} />
       <MarkdownPost content={NewsletterOct17} />
       <MarkdownPost content={NewsletterSep21} />
