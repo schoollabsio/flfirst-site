@@ -10,3 +10,11 @@ body {
     color-scheme: dark;
   }
 }
+
+ul > li {
+  margin-left: 15px;
+}
+
+ol > li {
+  margin-left: 15px;
+}

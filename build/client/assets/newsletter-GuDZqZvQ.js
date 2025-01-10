@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-6y6M2hOi.js";import{M as n}from"./markdown-B1g3Eey8.js";const a=`# Introducing the all new Florida First Tech Challenge website!
+import{j as e,r}from"./jsx-runtime-6y6M2hOi.js";import{M as i}from"./markdown-BDYZP2TH.js";const l=`# Introducing the all new Florida First Tech Challenge website!
 
 _August 21st, 2024_
 
@@ -9,7 +9,7 @@ If you're looking for event info or registration, head on over to the [Events](/
 Thanks, and have a great season!
 
 _– Jeremy School_
-`,i=`# Florida FTC 2024-25 Newsletter #4
+`,h=`# Florida FTC 2024-25 Newsletter #4
 
 _September 4th, 2024_
 
@@ -43,7 +43,7 @@ The following are the topics covered in this Florida FTC newsletter:
 **Field Perimeter and Matts Available** – I am giving away (first come first serve) one set of used field matts and two IFI field perimeters to any team that is within a one-hour drive of the northern Tampa area. The IFI field perimeters are the older and heavier field perimeters that can still be used by teams and competitions. I am willing to meet you within a one-hour drive from my house and would like to give the two fields to two different teams. Please reply to this email and let me know where you are located so that we can determine a shared meeting location so that I can give you the field perimeter and/or used field matts.
 
 _– Hans Wolf_
-`,s=`# Florida FTC 2024-25 Newsletter #5
+`,d=`# Florida FTC 2024-25 Newsletter #5
 
 _September 21st, 2024_
 
@@ -53,13 +53,13 @@ The Florida FTC season theme this year is Robot Design. Therefore, this newslett
 
 The following are the topics covered in this Florida FTC newsletter:
 
-1.                     New Florida FIRST Tech Challenge Website (www.flfirst.org)
+1.                      New Florida FIRST Tech Challenge Website (www.flfirst.org)
 
-2.                     AJ’s Tech Corner
+2.                      AJ’s Tech Corner
 
-3.                     SDK 10.1 Released: Use REV Hardware Client to Update
+3.                      SDK 10.1 Released: Use REV Hardware Client to Update
 
-4.                     Robot Design Ideas
+4.                      Robot Design Ideas
 
 ## Newsletter Details
 
@@ -88,7 +88,7 @@ The following are a few video links to some of the Ri30H videos:
 - https://www.youtube.com/playlist?list=PLkZ6_Ld1x9Y9gDrQusVzXpB_OPDQigr7e
 
 _– Hans Wolf_
-`,r=`# Florida FTC 2024-25 Newsletter #6
+`,c=`# Florida FTC 2024-25 Newsletter #6
 
 _October 17th, 2024_
 
@@ -139,7 +139,7 @@ A big THANK YOU to AJ Foster, Jeremy School, and Kyle Hoyt for their hard work o
 I encourage all coaches to visit the Dean's List page to learn about last year’s Florida winner, Ramsey McClure.
 
 _– Hans Wolf_
-`,l=`# Florida FTC 2024-25 Newsletter #7
+`,u=`# Florida FTC 2024-25 Newsletter #7
 
 _October 31st, 2024_
 
@@ -194,7 +194,204 @@ Currently, 10 Florida teams are not “Event Ready.” Coaches can confirm readi
 - Registration: Coaches #1 and #2 should create an account using the email associated with their FIRST Dashboard login. Scroll to find your league and event, then click “Register.” If the “Register” button is gray, the registration window is not yet open. You will need to create an account on Region Manager. [This video](https://youtu.be/AoQfTYcof1Q) explains the registration process.
 
 _– Hans Wolf_
-`,h=`# Florida FTC 2024-25 Newsletter #12
+`,m=`# Florida FTC 2024-25 Newsletter #8
+
+_November 10, 2024_
+
+Greetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:
+
+We have now completed 8 League Meets but still have 19 more to go. The league season will wrap up with 8 League Tournaments. A reminder to all teams: once you pay your league registration fee, your team can attend all League Meets and participate in your League Tournament. Please review the items below, as I have an important update about this season’s Florida Championship event.
+
+The following are the topics covered in this Florida FTC newsletter:
+
+1. Florida Championship Update
+2. League Meet Results Published on FIRST Website
+3. Team Number Template Available (Rules R401, R402, & R403)
+4. How to Register to Attend League Events (Repeat)
+
+## Newsletter Details
+
+**Florida Championship Update** – The Florida FIRST Tech Challenge Championship will be held on February 28, 2025, and March 1, 2025, at the AdventHealth FieldHouse in Winter Haven, FL. Exciting news this season: we will run 8 qualification matches per team instead of 6. As a result, qualification matches will begin Friday afternoon, and the inspection process will start earlier on Friday.
+
+Volunteers: The Florida Championship event is now in the FIRST Volunteer Management System (VMS), and we will need volunteers available Friday afternoon to start running qualification matches. The current plan is to run 14 matches on Friday.
+
+**League Meet Results Published on FIRST Website** – Teams can access the results of all events within the United States. Event details are available on the FIRST webpage: [https://ftc-events.firstinspires.org/2024](https://ftc-events.firstinspires.org/2024). To find Florida league event results, select "Florida" from the region menu in the center of the page and press the “Update List” button. Events are organized by date.
+
+**Team Number Template Available (Rules R401, R402, & R403)** – Teams and Coaches, please review the updated team number rules (R401, R402, & R403). Teams are no longer required to use Alliance Markers and must now have two sets of team numbers: two with a red background and two with a blue background. FIRST has published a “Robot Sign Template” on the Season Materials web page, but it requires teams to use red and blue markers to color in their numbers. To assist, I’ve created a Microsoft Word document template that you can use if your team has access to a color printer. Reply to this email if you’d like a copy of the team number template.
+
+**How to Register to Attend League Events (Repeat)** – All League Meet and most League Tournament dates and locations are published on the [www.flfirst.org](http://www.flfirst.org) website. To find your league event information, select the “Events” page near the top-right side of the page. Florida-wide events are listed at the top of the page, followed by events organized by League name and date. Event details include the address, the registration window, and the number of teams registered.
+
+To register, Team Coach #1 and #2 must create an account using the same email address linked to their FIRST Dashboard. Locate your league and event by scrolling down the Events page, then select the “Register” button. If the button is grayed out, the registration window is not yet open. You’ll be prompted to create an account in the Region Manager system. For assistance, watch this short video explaining the event registration process: [https://youtu.be/AoQfTYcof1Q](https://youtu.be/AoQfTYcof1Q).
+
+_– Hans Wolf_
+`,p=`# Florida FTC 2024-25 Newsletter #9
+
+_November 14, 2024_
+
+Greetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:
+
+The primary purpose of this newsletter is to help you understand the league ranking approach and prepare for several important upcoming deadlines.
+
+The following are the topics covered in this Florida FTC newsletter:
+
+1. Dean’s List Student Nominations
+2. Florida Championship Volunteer T-shirt Design Contest
+3. Florida Championship Advancement Criteria
+4. Understanding League Ranking
+
+## Newsletter Details
+
+**Dean’s List Student Nominations** – The deadline for submitting Dean’s List nominations is **December 15, 2024**. Coaches can submit nomination essays through the FIRST dashboard. All Florida league nominations will be submitted to a single “Interview Only” event called the “Florida Dean’s List Interview.” Coaches should select this event when submitting Dean’s List nominations.
+
+Each team can submit up to two (2) nominations for students in 10th or 11th grade who best represent FIRST program values. Nominated students will be interviewed during league tournaments to provide input for selecting the four (4) Florida Dean’s List Finalists, announced on March 1, 2025, at the Florida Championship. These finalists will compete for one of ten (10) Dean’s List Winner titles at the World Championship in April 2025.
+
+For more details, review Section 6.4.1 Dean’s List Award in the Competition Manual or visit [FIRST Tech Challenge Dean's List](https://www.firstinspires.org).
+
+**Florida Championship Volunteer T-shirt Design Contest** – The Florida Championship Volunteer T-shirt Design Contest is back! This is your chance to secure a guaranteed invitation to the Florida Championship on **February 28 and March 1, 2025**.
+
+Design submissions are due by **December 20, 2024** and must meet the following requirements:
+
+- Submit the design as a high-resolution JPG file to hans.wolf@verizon.net.
+- The file must be single-color.
+- Include the text: “Florida Championship 2025.”
+- Incorporate the official _INTO THE DEEP℠ presented by Raytheon Technologies_ game logo.
+
+The winner will receive an automatic invitation to the Florida Championship. If the team also qualifies through league advancement, they will receive a $200 credit toward the registration fee.
+
+**Florida Championship Advancement Criteria** – In early December 2024, the number of teams advancing from each League Tournament to the Florida Championship will be announced. This approach mirrors how FIRST allocates advancement slots for the World Championship.
+
+- All leagues will have a minimum of 2 advancement slots.
+- Larger leagues will receive more slots based on relative league size.
+- Last season, Florida leagues received between 4 and 11 advancement slots.
+
+Advancement is determined by Judge awards or robot alliance performance. Review Chapter 4.0 Advancement in the Competition Manual for details, as there are changes from previous seasons. Notably, there are only two-team alliances in Playoff rounds, with the Winning Alliance Captain and Partner advancing in positions #2 and #3, followed by the 2nd Place Inspire Award team.
+
+**Understanding League Ranking** – Attending as many League Meets as possible helps your team improve its league ranking going into the League Tournament.
+
+League ranking is based on:
+
+- Ranking Score (RS)
+- Average Alliance Auto Points
+- Average TeleOp Alliance Ascend Points
+
+The scoring software selects a team’s best 10 matches to calculate rankings. For example, if your team participates in 3 League Meets with 6 matches each (18 matches total), the software will use the top 10 matches with the highest scores.
+
+Ranking Score (RS) is the average of a team’s Ranking Points (RP), where:
+
+- Win = 2 RP
+- Tie = 1 RP
+- Loss = 0 RP
+
+For details, review Section 13.5 Qualification Matches in the Competition Manual.
+
+_– Hans Wolf_
+`,g=`# Florida FTC 2024-25 Newsletter #10
+
+_November 24, 2024_
+
+Greetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:
+
+The primary purpose of this newsletter is to highlight several important deadline dates.
+
+The following are the topics covered in this Florida FTC newsletter:
+
+1. Florida Championship Volunteer T-shirt Design Contest (Correction)
+2. Dean’s List Student Nominations (Repeat)
+3. Florida Championship Lottery
+
+## Newsletter Details
+
+**Florida Championship Volunteer T-shirt Design Contest (Correction)** – This is your opportunity to secure a guaranteed invitation to the Florida Championship on **February 28 and March 1, 2025**. All Florida FTC teams are eligible to submit a volunteer t-shirt design by **December 20, 2024**, and the winner will be announced on **January 12, 2025**.
+
+Design requirements:
+
+- Email design files to hanskwolf@gmail.com or hans.wolf@verizon.net by **midnight December 20, 2024**.
+- Submit the design as a high-resolution JPG file.
+- The design must be single color.
+- Include the text: “Florida Championship 2025.”
+- Incorporate the official _INTO THE DEEP℠ presented by Raytheon Technologies_ game logo.
+
+The winner will receive an automatic invitation to the Florida Championship. If the team also qualifies through league advancement, they will receive a $200 credit toward the registration fee.
+
+**Dean’s List Student Nominations (Repeat)** – The deadline for submitting Dean’s List nominations is **December 15, 2024**. Coaches can submit nomination essays through the FIRST dashboard. All nominations across Florida leagues will be submitted to a single “Interview Only” event called the “Florida Dean’s List Interview.” Coaches must select this event when submitting nominations.
+
+Each team may submit up to two (2) nominations for 10th or 11th grade team members who best represent FIRST program values. Nominated students will be interviewed during league tournaments to provide input for selecting four (4) Florida Dean’s List Finalists, who will be announced on **March 1, 2025**, at the Florida Championship. These finalists will compete for one of ten (10) Dean’s List Winner titles at the World Championship in April 2025.
+
+For more details, review Section 6.4.1 Dean’s List Award in the Competition Manual or visit [FIRST Tech Challenge Dean's List](https://www.firstinspires.org).
+
+**Florida Championship Lottery** – The Florida Championship lottery is back! This year, **56 teams** will receive invitations to participate in the Florida Championship:
+
+- 54 teams will advance through league tournaments.
+- One team will qualify by winning the volunteer t-shirt design contest.
+- One additional team will be selected through the lottery.
+
+The lottery is an excellent opportunity for teams that have not recently attended the Florida Championship. To enter, the head coach must email hanskwolf@gmail.com with the following subject line:  
+**“Florida Championship Lottery: Team #xxxxx”** (replace "xxxxx" with your FTC team number).
+
+Lottery entry emails must be received by **January 10, 2025**.
+
+Reminder: Teams invited to the Florida Championship are required to pay a $200 event registration fee and must arrive at the venue by **11:00 am on Friday, February 28, 2025**, to complete the robot inspection process and begin alliance matches.
+
+_– Hans Wolf_
+`,w=`# Florida FTC 2024-25 Newsletter #11
+
+_December 10, 2024_
+
+Greetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:
+
+The primary purpose of this newsletter is to provide a final reminder about the Dean’s List nomination deadline, highlight a few important rule changes implemented this season, and encourage all participants to review the Team Updates to the Competition Manual.
+
+The following are the topics covered in this Florida FTC newsletter:
+
+1. Dean’s List Student Nominations (Repeat)
+2. Key Rule Change Reminder
+3. Competition Manual Team Updates
+
+## Newsletter Details
+
+**Dean’s List Student Nominations (Repeat)** – The deadline for submitting Dean’s List nominations is **December 15, 2024**. Coaches can submit nomination essays through their FIRST dashboard. All Florida league nominations will be submitted to a single “Interview Only” event called the “Florida Dean’s List Interview.” Coaches must select this event when submitting nominations.
+
+Each team may submit up to two (2) nominations for 10th or 11th grade team members who best represent FIRST program values. Nominated students will be interviewed during league tournaments to provide input for selecting the four (4) Florida Dean’s List Finalists, who will be announced on **March 1, 2025**, at the Florida Championship. These finalists will compete for one of ten (10) Dean’s List Winner titles at the World Championship in April 2025.
+
+For more details, review Section 6.4.1 Dean’s List Award in the Competition Manual or visit [FIRST Tech Challenge Dean's List](https://www.firstinspires.org).
+
+**Key Rule Change Reminder** – During the Florida FTC Season Kick-off, we highlighted several rule changes for the _INTO THE DEEP℠ presented by RTX_ season. Below are reminders of a few key changes:
+
+- Team Numbers (R401, R402, & R403):
+
+  - Teams no longer need Alliance Markers.
+  - Teams must have two red-background and two blue-background team numbers in white.
+  - A Microsoft Word template is available for teams with access to a color printer. Email hans.wolf@verizon.net to request the template.
+
+- Servos (R502):
+
+  - Mechanical output power for servos must be less than 8 watts and stall current below 4 amps.
+  - A validated servo list is available in the _Inspection Quick Reference_ document on the [FIRST webpage](https://www.firstinspires.org/resource-library/ftc/volunteer-resources).
+
+- Horizontal Expansion Rule (R104 & G418):
+  - Robots may not expand beyond a 20x42 inch area after the match starts.
+  - Violations occur if the robot swings outside the 20-inch limit during Level 2 ASCEND or tips over during a match.
+
+**Competition Manual Team Updates** – FIRST has published six Team Updates, which often include Competition Manual changes. These updates can be found on the [FIRST Game and Season Info page](https://www.firstinspires.org/resource-library/ftc/game-and-season-info). Below are highlights from recent updates:
+
+- Human Players (G431):
+
+  - Human Players may only place SCORING ELEMENTS in the OBSERVATION ZONE during AUTO and TELEOP periods.
+  - Robots and Human Players may not simultaneously control or contact a SCORING ELEMENT.
+
+- Horizontal Expansion (R104 & G418):
+
+  - Horizontal size boundaries must remain coplanar to the TILE floor.
+  - Team Update #05 removed the requirement for referees to request a re-inspection for violations.
+
+- Robot Scoring Criteria (ASCEND):
+  - Robots may stabilize on the SUBMERSIBLE during ASCEND but must not touch it at match end.
+  - Robot chassis may swing into the SUBMERSIBLE ZONE during ASCEND.
+
+**Important Reminder**: Review all Team Updates published by FIRST before attending your next event.
+
+_– Hans Wolf_
+`,f=`# Florida FTC 2024-25 Newsletter #12
 
 _January 6th, 2025_
 
@@ -238,4 +435,98 @@ Fifty-six (56) Florida FTC teams will receive an invitation to the state champio
 - Space Coast League – 6 teams
 
 _– Hans Wolf_
-`,m=()=>[{title:"Newsletter | Florida FIRST Tech Challenge"},{name:"description",content:"Welcome to Remix!"}],d=({children:o})=>e.jsx("div",{className:"bg-white shadow-md p-4",children:e.jsx("div",{className:"flex flex-col gap-4",children:o})}),t=({content:o})=>e.jsx(d,{children:e.jsx(n,{markdown:o})});function g(){return e.jsxs("div",{className:"flex flex-col max-w-prose mx-auto gap-4",children:[e.jsx(t,{content:h}),e.jsx(t,{content:l}),e.jsx(t,{content:r}),e.jsx(t,{content:s}),e.jsx(t,{content:i}),e.jsx(t,{content:a})]})}export{g as default,m as meta};
+`,b=`## Newsletter #12 Summary
+
+**Florida Championship**:
+
+- Date: February 28–March 1, 2025
+- Location: Advent Fieldhouse, Winter Haven, FL
+- 56 teams will qualify via League Tournaments and additional criteria.
+
+**League Tournaments**:
+
+- Dates: Final four weeks of the season (specific dates depend on the league).
+
+Activities include:
+
+- Dean’s List interviews (no award).
+- Alliance selection and playoff matches.
+- Judge interviews and awards.
+- Announcement of teams advancing to the Florida Championship.
+
+**Judge Interviews**:
+
+- 10-minute interviews (hybrid format: online before tournament day).
+- Required document: Engineering Portfolio (Control Award form now integrated).
+- Ensure access to the online scoring software: [ftc-scoring.firstinspires.org](https://ftc-scoring.firstinspires.org/).
+
+**Alliance Selection and Playoff Matches**:
+
+- Top 4 or 6 ranked teams (based on size) become alliance captains.
+- Double elimination bracket determines the winning alliance.
+
+**Advancement to Florida Championship**:
+
+- Respond to the invitation email within 48 hours.
+- Registration fee: $200 per team.
+- Arrival time: By 11:00 AM, February 28, 2025, for inspections and matches.
+
+**Advancing Teams by League**:
+
+- AeroCoast: 6 teams
+- Gulf Coast: 8 teams
+- F.U.N.: 6 teams
+- Orlando Robotics: 6 teams
+- North East Florida: 8 teams
+- ROBOT: 6 teams
+- South Florida: 8 teams
+- Space Coast: 6 teams
+
+**Key Changes**:
+
+- Hybrid judging interviews conducted online.
+- Engineering Portfolio replaces multiple documents for awards.
+- Playoff structure uses double elimination.
+`,v=`## Newsletter #11 Summary
+
+**Dean’s List Nominations**:
+
+- Deadline: December 15, 2024.
+- Submit essays via the FIRST dashboard under the “Florida Dean’s List Interview” event.
+- Each team may nominate up to 2 students (10th/11th grade).
+- Interviews held at league tournaments; finalists announced on March 1, 2025.
+- Finalists compete for Dean’s List Winner titles at the World Championship in April 2025.
+
+**Key Rule Changes**:
+
+- Team Numbers:
+  - No Alliance Markers required.
+  - Two red and two blue team numbers with white text needed (template available upon request).
+- Servos:
+  - Output power <8 watts, stall current <4 amps.
+  - Validated servo list in the _Inspection Quick Reference_.
+- Horizontal Expansion:
+  - Robots must stay within a 20x42-inch area after the match begins.
+  - Violations apply if the robot exceeds limits during gameplay.
+
+**Competition Manual Updates**:
+
+- Human Players:
+
+  - May only place SCORING ELEMENTS in the OBSERVATION ZONE during AUTO and TELEOP.
+  - Simultaneous contact by Robots and Human Players is prohibited.
+
+- Horizontal Expansion:
+
+  - Expansion must stay coplanar to the floor.
+  - Re-inspection no longer required for violations.
+
+- ASCEND Scoring:
+
+  - Robots may stabilize on the SUBMERSIBLE but must not touch it at match end.
+
+**Action Items**:
+
+- Review the six published Team Updates before attending events.
+- Updates available on the [FIRST Game and Season Info page](https://www.firstinspires.org/resource-library/ftc/game-and-season-info).
+`,R=()=>[{title:"Newsletter | Florida FIRST Tech Challenge"},{name:"description",content:"Welcome to Remix!"}],y=({children:o})=>e.jsx("div",{className:"bg-white shadow-md p-4 max-w-prose",children:e.jsx("div",{className:"flex flex-col gap-4",children:o})}),t=({content:o,summary:n})=>{const[a,s]=r.useState(!1);return e.jsxs("div",{className:"flex gap-4",children:[e.jsx(y,{children:e.jsxs("div",{className:"relative",children:[n&&e.jsx("button",{onClick:()=>s(!a),className:"flex md:hidden min-w-36 justify-center bg-gray-100/90 px-8 py-4 rounded-sm absolute top-1 right-1 text-md text-gray-500",children:a?"Original":"Summary"}),e.jsx("div",{className:`italic text-gray-600 ${a?"block":"hidden"} sm:hidden`,children:e.jsx(i,{markdown:n??""})}),e.jsx("div",{className:`${a?"hidden":"block"} sm:block`,children:e.jsx(i,{markdown:o})})]})}),e.jsx("div",{className:"hidden md:flex flex-col gap-4 italic text-gray-500 text-sm w-96",children:n&&e.jsx(i,{markdown:n})})]})};function C(){return e.jsxs("div",{className:"flex flex-col mx-auto gap-4",children:[e.jsx(t,{content:f,summary:b}),e.jsx(t,{content:w,summary:v}),e.jsx(t,{content:g}),e.jsx(t,{content:p}),e.jsx(t,{content:m}),e.jsx(t,{content:u}),e.jsx(t,{content:c}),e.jsx(t,{content:d}),e.jsx(t,{content:h}),e.jsx(t,{content:l})]})}export{C as default,R as meta};
