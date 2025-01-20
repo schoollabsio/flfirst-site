@@ -100,6 +100,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <div
                 id="menu-button"
                 className="absolute inset-y-0 right-0 flex items-center sm:hidden"
+                onClick={() => {
+                  const mobileMenu = document.getElementById("mobile-menu");
+                  if (mobileMenu) {
+                    mobileMenu.classList.toggle("hidden");
+                  }
+                }}
               >
                 <button
                   type="button"
