@@ -53,13 +53,13 @@ The Florida FTC season theme this year is Robot Design. Therefore, this newslett
 
 The following are the topics covered in this Florida FTC newsletter:
 
-1.                      New Florida FIRST Tech Challenge Website (www.flfirst.org)
+1.                       New Florida FIRST Tech Challenge Website (www.flfirst.org)
 
-2.                      AJ’s Tech Corner
+2.                       AJ’s Tech Corner
 
-3.                      SDK 10.1 Released: Use REV Hardware Client to Update
+3.                       SDK 10.1 Released: Use REV Hardware Client to Update
 
-4.                      Robot Design Ideas
+4.                       Robot Design Ideas
 
 ## Newsletter Details
 
@@ -435,7 +435,86 @@ Fifty-six (56) Florida FTC teams will receive an invitation to the state champio
 - Space Coast League – 6 teams
 
 _– Hans Wolf_
-`,b=`## Newsletter #12 Summary
+`,b=`# Florida FTC 2024-25 Newsletter #13
+
+_January 19th, 2025_
+
+Greetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:
+
+All league meets have been completed, and the next step for each of the eight (8) Florida leagues is to conduct the League Tournament and determine which teams will advance to the Florida Championship. The AeroCoast and Orlando Robotics League Tournaments will be hosted this weekend (January 25th), while the FUN, Gulf Coast, Northeast Florida, ROBOT, South Florida, and Space Coast League Tournaments will take place on February 1st. Teams should begin preparing for judge interviews and planning for the alliance selection process. Please remember that the League Tournament is a much longer day as it includes the alliance selection process, Play-off Matches, and the Awards Ceremony.
+
+Good luck to all teams! I look forward to seeing 56 Florida teams at the Florida Championship on February 28 and March 1 at the AdventHealth Fieldhouse in Winter Haven, FL.
+
+The following are the topics covered in this Florida FTC newsletter:
+
+1. Florida Championship T-Shirt Design Contest Winner
+2. Teams Receiving Bids to the Florida Championship (Repeat)
+
+## Newsletter Details
+
+### Florida Championship T-Shirt Design Contest Winner
+
+The creativity of our Florida FIRST Tech Challenge teams continues to amaze. Selecting the winner of the Florida Championship t-shirt design contest was no easy task, as we received more than 40 fantastic designs. After review by a panel of eight (8) judges, the designs were narrowed down to a short list of four (4). Following significant debate, I am happy to announce that the winner of the t-shirt design contest is Team 27234, the Radical Raiders, from the FIRST United Network (F.U.N.) League. Congratulations to the Radical Raiders!
+
+### Teams Receiving Bids to the Florida Championship (Repeat)
+
+The final activity at your League Tournaments will be the announcement of teams advancing to the Florida Championship on February 28 and March 1, 2025, at the AdventHealth Fieldhouse in Winter Haven, FL. Advancing teams are selected based on the Order of Advancement requirements defined in Chapter 4 of the Competition Manual. Teams and coaches are encouraged to review this section to understand the advancement process.
+
+If your team is selected to attend the Florida Championship, you will receive an email requesting confirmation of attendance. You must respond to this email within 48 hours, or your spot will be given to another team. Teams attending the Florida Championship are required to pay a $200 team registration fee to help cover a portion of the event costs. Additionally, teams must arrive in Winter Haven, FL, by 11:00 AM on Friday, February 28, 2025, to complete robot and field inspections and participate in the start of qualification matches.
+
+Fifty-six (56) Florida FTC teams will receive invitations to the state championship. The distribution of these invitations is as follows:
+
+- One (1) team selected from lottery submissions
+- One (1) team as the winner of the volunteer t-shirt design contest
+- Fifty-four (54) teams from the League Championship Tournaments:
+  - AeroCoast League – 6 teams
+  - Gulf Coast League – 8 teams
+  - F.U.N. League – 6 teams
+  - Orlando Robotics League – 6 teams
+  - North East Florida League – 8 teams
+  - ROBOT League – 6 teams
+  - South Florida League – 8 teams
+  - Space Coast League – 6 teams
+
+_See you all at the Florida Championship!_
+
+_-- Hans Wolf_
+`,v=`## Newsletter #13 Summary
+
+**League Tournaments Schedule**:
+
+- January 25, 2025: AeroCoast and Orlando Robotics League Tournaments.
+- February 1, 2025: FUN, Gulf Coast, Northeast Florida, ROBOT, South Florida, and Space Coast League Tournaments.
+- League Tournaments include judge interviews, alliance selection, Play-off Matches, and Awards Ceremony.
+
+**Florida Championship Details**:
+
+- Date: February 28–March 1, 2025.
+- Location: AdventHealth Fieldhouse, Winter Haven, FL.
+- Arrival: Teams must arrive by 11:00 AM on February 28 for inspections and qualification matches.
+- Registration Fee: $200 per team.
+- Confirmation: Respond to the invitation email within 48 hours to secure your spot.
+
+**T-Shirt Design Contest Winner**:
+
+- Winner: Team 27234, the Radical Raiders, from the F.U.N. League.
+
+**Teams Advancing to the Florida Championship**:
+
+- One (1) team: Lottery winner.
+- One (1) team: T-shirt design contest winner.
+- Fifty-four (54) teams from League Tournaments:
+  - AeroCoast: 6 teams
+  - Gulf Coast: 8 teams
+  - F.U.N.: 6 teams
+  - Orlando Robotics: 6 teams
+  - Northeast Florida: 8 teams
+  - ROBOT: 6 teams
+  - South Florida: 8 teams
+  - Space Coast: 6 teams
+
+Good luck to all teams in the League Tournaments!
+`,y=`## Newsletter #12 Summary
 
 **Florida Championship**:
 
@@ -487,7 +566,7 @@ Activities include:
 - Hybrid judging interviews conducted online.
 - Engineering Portfolio replaces multiple documents for awards.
 - Playoff structure uses double elimination.
-`,v=`## Newsletter #11 Summary
+`,T=`## Newsletter #11 Summary
 
 **Dean’s List Nominations**:
 
@@ -529,4 +608,4 @@ Activities include:
 
 - Review the six published Team Updates before attending events.
 - Updates available on the [FIRST Game and Season Info page](https://www.firstinspires.org/resource-library/ftc/game-and-season-info).
-`,R=()=>[{title:"Newsletter | Florida FIRST Tech Challenge"},{name:"description",content:"Welcome to Remix!"}],y=({children:o})=>e.jsx("div",{className:"bg-white shadow-md p-4 max-w-prose",children:e.jsx("div",{className:"flex flex-col gap-4",children:o})}),t=({content:o,summary:n})=>{const[a,s]=r.useState(!1);return e.jsxs("div",{className:"flex gap-4",children:[e.jsx(y,{children:e.jsxs("div",{className:"relative",children:[n&&e.jsx("button",{onClick:()=>s(!a),className:"flex md:hidden min-w-36 justify-center bg-gray-100/90 px-8 py-4 rounded-sm absolute top-1 right-1 text-md text-gray-500",children:a?"Original":"Summary"}),e.jsx("div",{className:`italic text-gray-600 ${a?"block":"hidden"} sm:hidden`,children:e.jsx(i,{markdown:n??""})}),e.jsx("div",{className:`${a?"hidden":"block"} sm:block`,children:e.jsx(i,{markdown:o})})]})}),e.jsx("div",{className:"hidden md:flex flex-col gap-4 italic text-gray-500 text-sm w-96",children:n&&e.jsx(i,{markdown:n})})]})};function C(){return e.jsxs("div",{className:"flex flex-col mx-auto gap-4",children:[e.jsx(t,{content:f,summary:b}),e.jsx(t,{content:w,summary:v}),e.jsx(t,{content:g}),e.jsx(t,{content:p}),e.jsx(t,{content:m}),e.jsx(t,{content:u}),e.jsx(t,{content:c}),e.jsx(t,{content:d}),e.jsx(t,{content:h}),e.jsx(t,{content:l})]})}export{C as default,R as meta};
+`,S=()=>[{title:"Newsletter | Florida FIRST Tech Challenge"},{name:"description",content:"Welcome to Remix!"}],F=({children:o})=>e.jsx("div",{className:"bg-white shadow-md p-4 max-w-prose",children:e.jsx("div",{className:"flex flex-col gap-4",children:o})}),t=({content:o,summary:n})=>{const[a,s]=r.useState(!1);return e.jsxs("div",{className:"flex gap-4",children:[e.jsx(F,{children:e.jsxs("div",{className:"relative",children:[n&&e.jsx("button",{onClick:()=>s(!a),className:"flex md:hidden min-w-36 justify-center bg-gray-100/90 px-8 py-4 rounded-sm absolute top-1 right-1 text-md text-gray-500",children:a?"Original":"Summary"}),e.jsx("div",{className:`italic text-gray-600 ${a?"block":"hidden"} sm:hidden`,children:e.jsx(i,{markdown:n??""})}),e.jsx("div",{className:`${a?"hidden":"block"} sm:block`,children:e.jsx(i,{markdown:o})})]})}),e.jsx("div",{className:"hidden md:flex flex-col gap-4 italic text-gray-500 text-sm w-96",children:n&&e.jsx(i,{markdown:n})})]})};function L(){return e.jsxs("div",{className:"flex flex-col mx-auto gap-4",children:[e.jsx(t,{content:b,summary:v}),e.jsx(t,{content:f,summary:y}),e.jsx(t,{content:w,summary:T}),e.jsx(t,{content:g}),e.jsx(t,{content:p}),e.jsx(t,{content:m}),e.jsx(t,{content:u}),e.jsx(t,{content:c}),e.jsx(t,{content:d}),e.jsx(t,{content:h}),e.jsx(t,{content:l})]})}export{L as default,S as meta};

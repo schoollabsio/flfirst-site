@@ -22,9 +22,7 @@ function convertMarkdownLinksToAnchors(text: string): string {
   });
 }
 
-function findListItems(
-  src: string,
-): {
+function findListItems(src: string): {
   indent: number;
   marker: string;
   text: string;
