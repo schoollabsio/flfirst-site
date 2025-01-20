@@ -12,7 +12,9 @@ import Newsletter2024Nov14 from "./static/newsletters/2024-11-14_newsletter-9.md
 import Newsletter2024Nov24 from "./static/newsletters/2024-11-24_newsletter-10.md?raw";
 import Newsletter2024Dec10 from "./static/newsletters/2024-12-10_newsletter-11.md?raw";
 import Newsletter2025Jan6 from "./static/newsletters/2025-01-06_newsletter-12.md?raw";
+import Newsletter2025Jan19 from "./static/newsletters/2025-01-19_newsletter-13.md?raw";
 
+import Newsletter2025Jan19Summary from "./static/newsletters/summaries/2025-01-19_newsletter-13.md?raw";
 import Newsletter2025Jan6Summary from "./static/newsletters/summaries/2025-01-06_newsletter-12.md?raw";
 import Newsletter2024Dec10Summary from "./static/newsletters/summaries/2024-12-10_newsletter-11.md?raw";
 import { useState } from "react";
@@ -73,6 +75,10 @@ const MarkdownPost = ({
 export default function Newsletter() {
   return (
     <div className="flex flex-col mx-auto gap-4">
+      <MarkdownPost
+        content={Newsletter2025Jan19}
+        summary={Newsletter2025Jan19Summary}
+      />
       <MarkdownPost
         content={Newsletter2025Jan6}
         summary={Newsletter2025Jan6Summary}
