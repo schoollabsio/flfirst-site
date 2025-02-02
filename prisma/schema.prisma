@@ -87,3 +87,18 @@ model FirstTeam {
 
   @@map("first_teams")
 }
+
+model FirstVideo {
+  id Int @id @default(autoincrement())
+
+  event_code  String
+  event_name  String
+  team        Int
+  award       String
+  url         String?
+  available_at DateTime
+
+  saved_at DateTime @default(now())
+
+  @@map("first_videos")
+}

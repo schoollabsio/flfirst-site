@@ -1,74 +1,126 @@
-import { MetaFunction } from "@remix-run/react";
+import { json, LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { FirstTeam, Prisma, PrismaClient } from "@prisma/client";
+import dayjs from "dayjs";
+import {
+  InfoCard,
+  InfoCardAttribute,
+  InfoCardColumn,
+  InfoCardContent,
+  InfoCardHeader,
+} from "~/components/info-card";
+import { InfoCategory } from "~/components/info-category";
+import { useState } from "react";
 
-import features from "../../features.json";
-import FeatureDisabled from "~/components/feature-disabled";
-import useFeatureFlag from "~/hooks/useFeatureFlag";
+interface FirstVideo {
+  id: number;
+  event_code: string;
+  event_name: string;
+  team: number;
+  award: string;
+  url: string | null;
+  available_at: Date;
+}
 
-console.log(features);
+export const loader: LoaderFunction = async () => {
+  const prisma = new PrismaClient();
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Videos | Florida FIRST Tech Challenge" },
-    {
-      name: "description",
-      content: "Videos submitted by teams in the Florida FIRST Tech Challenge",
-    },
-  ];
+  const videos = await prisma.firstVideo.findMany({
+    orderBy: [{ event_code: "asc" }, { team: "asc" }],
+  });
+
+  const teams = await prisma.firstTeam.findMany();
+
+  return json({ videos, teams });
 };
 
-const VIDEOS = [
-  {
-    teamNumber: "12345",
-    teamName: "Robotics Masters",
-    title: "Robot Reveal 2024",
-    videoUrl: "https://youtube.com/example1",
-  },
-  {
-    teamNumber: "67890",
-    teamName: "Tech Titans",
-    title: "Competition Highlights",
-    videoUrl: "https://youtube.com/example2",
-  },
-];
-
 export default function Videos() {
-  const videosEnabled = useFeatureFlag("videos");
+  const { videos, teams } = useLoaderData<{
+    videos: FirstVideo[];
+    teams: FirstTeam[];
+  }>();
 
-  if (!videosEnabled) {
-    return <FeatureDisabled feature="videos" />;
-  }
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const groupedVideos = videos
+    .filter(
+      (video) =>
+        video.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        video.team.toString().includes(searchTerm.toLowerCase()) ||
+        video.award.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+    .reduce(
+      (acc, video) => {
+        if (!acc[video.event_code]) {
+          acc[video.event_code] = {
+            name: video.event_name,
+            videos: [],
+          };
+        }
+        acc[video.event_code].videos.push(video);
+        return acc;
+      },
+      {} as Record<string, { name: string; videos: FirstVideo[] }>,
+    );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Videos</h1>
-        <a
-          href="https://ftcregion.com"
-          target="_blank"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-        >
-          Submit
-        </a>
-      </div>
-
-      <div className="grid gap-6">
-        {VIDEOS.map((video) => (
-          <div
-            key={`${video.teamNumber}-${video.title}`}
-            className="border p-4 shadow-sm bg-white"
+    <div className="w-full md:min-w-[750px] md:max-w-prose flex flex-col gap-4">
+      <div className="w-full flex flex-col items-center">
+        <h1 className="text-4xl font-bold">Award Videos</h1>
+        <p className="text-gray-500">
+          Below, you can find video submissions for the Compass award.
+        </p>
+        <p className="text-gray-500">
+          To submit a video, please login to{" "}
+          <a
+            href="https://ftcregion.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-blue-600 hover:underline"
           >
-            <h2 className="text-xl font-semibold">
-              Team {video.teamNumber} - {video.teamName}
+            Region Manager
+          </a>
+          , find the event, and provide the video URL.
+        </p>
+      </div>
+      <div className="flex flex-col w-full mx-auto">
+        {Object.entries(groupedVideos).map(([eventCode, { name, videos }]) => (
+          <div key={eventCode} className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-600 mb-4 text-center">
+              {name}
             </h2>
-            <p className="text-gray-600 mb-2">{video.title}</p>
-            <a
-              href={video.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              Watch Video →
-            </a>
+            <div className="flex flex-col gap-4">
+              {videos
+                .filter((video) => video.url)
+                .map((video) => (
+                  <div
+                    key={`${video.event_code}-${video.team}`}
+                    className="flex flex-row bg-white p-4 shadow-md gap-4"
+                  >
+                    <div>{video.team}</div>
+                    <div>
+                      {teams.find((team) => team.number === video.team)?.name ??
+                        "Unknown Team"}
+                    </div>
+                    <div className="flex-grow text-right">
+                      {video.url ? (
+                        <a
+                          href={video.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 hover:underline text-sm"
+                        >
+                          Watch Video →
+                        </a>
+                      ) : (
+                        <span className="text-gray-400 text-sm">
+                          Coming Soon
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         ))}
       </div>

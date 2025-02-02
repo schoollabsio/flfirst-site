@@ -25,7 +25,6 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const videosEnabled = useFeatureFlag("videos");
   return (
     <html lang="en">
       <head>
@@ -85,15 +84,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     >
                       Gallery
                     </a>
-                    <Show when={videosEnabled}>
-                      <a
-                        id="videos"
-                        href="/videos"
-                        className="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
-                      >
-                        Videos
-                      </a>
-                    </Show>
+                    <a
+                      id="videos"
+                      href="/videos"
+                      className="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Videos
+                    </a>
                   </div>
                 </div>
               </div>
@@ -185,15 +182,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               >
                 Gallery
               </a>
-              <Show when={videosEnabled}>
-                <a
-                  id="videos-mobile"
-                  href="/videos"
-                  className="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Videos
-                </a>
-              </Show>
+              <a
+                id="videos-mobile"
+                href="/videos"
+                className="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+              >
+                Videos
+              </a>
             </div>
           </div>
         </nav>

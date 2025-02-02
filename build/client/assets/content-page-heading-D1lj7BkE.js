@@ -1,1 +1,0 @@
-import{j as t}from"./jsx-runtime-6y6M2hOi.js";const a=({text:e,image:s})=>t.jsxs("div",{className:"relative z-0 -mt-4 -mx-4",children:[t.jsx("img",{src:s,alt:"Logo"}),t.jsx("div",{className:"h-full absolute top-0 left-0 flex flex-col justify-end",children:t.jsx("h2",{className:"text-6xl font-bold text-white bg-black w-auto py-6 px-4 opacity-80",children:e})})]});export{a as C};
