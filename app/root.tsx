@@ -196,19 +196,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
 
           <div className="w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]">
-            <div className="flex-1"></div>
-            <div className="flex-1">
-              <a
-                className="block w-full text-center"
-                href="https://visitcentralflorida.org/"
-                target="_blank"
-              >
-                <img
-                  className="h-8 w-auto inline-block"
-                  src="VisitCF_4cHorLogo-png.png"
-                  alt="Visit Central Florida"
-                />
-              </a>
+            <div className="flex-1 flex items-start">
+              <div>
+                <a
+                  className="block w-full text-center"
+                  href="https://www.rtx.com/"
+                  target="_blank"
+                >
+                  <img
+                    className="h-8 w-auto inline-block"
+                    src="rtx-black.jpg"
+                    alt="RTX"
+                  />
+                </a>
+              </div>
+            </div>
+            <div className="flex-1 flex items-center justify-center gap-4">
+              <div>
+                <a
+                  className="block w-full text-center"
+                  href="https://www.rtx.com/"
+                  target="_blank"
+                >
+                  <img
+                    className="h-8 w-auto inline-block"
+                    src="VisitCF_4cHorLogo-png.png"
+                    alt="Visit Central Florida"
+                  />
+                </a>
+              </div>
             </div>
             <div className="flex-1 text-right">
               <a href="/about" className="text-gray-400 hover:text-blue-500">
