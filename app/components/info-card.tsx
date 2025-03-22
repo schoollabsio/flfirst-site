@@ -1,7 +1,7 @@
 import React from "react";
 
 export const InfoCardHeader: React.FC<{
-  title: string;
+  title: string | React.ReactElement;
   secondaryContent?: React.ReactElement | string | null;
 }> = ({ title, secondaryContent }) => {
   return (

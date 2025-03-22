@@ -25,7 +25,6 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const videosEnabled = useFeatureFlag("videos");
   return (
     <html lang="en">
       <head>
@@ -85,15 +84,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     >
                       Gallery
                     </a>
-                    <Show when={videosEnabled}>
-                      <a
-                        id="videos"
-                        href="/videos"
-                        className="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
-                      >
-                        Videos
-                      </a>
-                    </Show>
+                    <a
+                      id="videos"
+                      href="/videos"
+                      className="text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Videos
+                    </a>
                   </div>
                 </div>
               </div>
@@ -185,15 +182,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               >
                 Gallery
               </a>
-              <Show when={videosEnabled}>
-                <a
-                  id="videos-mobile"
-                  href="/videos"
-                  className="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
-                >
-                  Videos
-                </a>
-              </Show>
+              <a
+                id="videos-mobile"
+                href="/videos"
+                className="text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium"
+              >
+                Videos
+              </a>
             </div>
           </div>
         </nav>
@@ -201,19 +196,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
 
           <div className="w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]">
-            <div className="flex-1"></div>
-            <div className="flex-1">
-              <a
-                className="block w-full text-center"
-                href="https://visitcentralflorida.org/"
-                target="_blank"
-              >
-                <img
-                  className="h-8 w-auto inline-block"
-                  src="VisitCF_4cHorLogo-png.png"
-                  alt="Visit Central Florida"
-                />
-              </a>
+            <div className="flex-1 flex items-start">
+              <div>
+                <a
+                  className="block w-full text-center"
+                  href="https://www.rtx.com/"
+                  target="_blank"
+                >
+                  <img
+                    className="h-8 w-auto inline-block"
+                    src="rtx-black.jpg"
+                    alt="RTX"
+                  />
+                </a>
+              </div>
+            </div>
+            <div className="flex-1 flex items-center justify-center gap-4">
+              <div>
+                <a
+                  className="block w-full text-center"
+                  href="https://www.rtx.com/"
+                  target="_blank"
+                >
+                  <img
+                    className="h-8 w-auto inline-block"
+                    src="VisitCF_4cHorLogo-png.png"
+                    alt="Visit Central Florida"
+                  />
+                </a>
+              </div>
             </div>
             <div className="flex-1 text-right">
               <a href="/about" className="text-gray-400 hover:text-blue-500">

@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-import { jsx, Fragment, jsxs } from "react/jsx-runtime";
+import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { PassThrough } from "node:stream";
 import { createReadableStreamFromReadable, json, redirect } from "@remix-run/node";
 import { RemixServer, Outlet, Meta, Links, ScrollRestoration, Scripts, useLoaderData } from "@remix-run/react";
@@ -13,8 +13,8 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import timezone from "dayjs/plugin/timezone.js";
 import fs from "fs/promises";
-import { useState } from "react";
 import { marked } from "marked";
+import { useState } from "react";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 const SECOND = 1e3;
@@ -97,6 +97,9 @@ class RegionManagerService {
   }
   get teamsUri() {
     return `${this.context.settings.regionManager.host}/api/s/${this.context.settings.regionManager.season}/r/${this.context.settings.regionManager.region}/teams`;
+  }
+  get videosUri() {
+    return `${this.context.settings.regionManager.host}/api/s/${this.context.settings.regionManager.season}/r/${this.context.settings.regionManager.region}/videos`;
   }
   async syncEvents() {
     const raw = await this.context.simpleFetch(this.eventsUri, {});
@@ -288,6 +291,44 @@ class RegionManagerService {
       })
     ]);
   }
+  async syncVideos() {
+    const raw = await this.context.simpleFetch(this.videosUri, {});
+    const response = await raw.json();
+    const videos = response.data.videos.map((video) => ({
+      event_code: video.event_code,
+      event_name: video.event_name,
+      team: video.team,
+      award: video.award,
+      url: video.url,
+      available_at: dayjs(video.available_at).toDate(),
+      saved_at: dayjs().tz("America/New_York").toDate()
+    }));
+    const existing = await this.context.prisma.firstVideo.findMany();
+    const existingKeys = new Set(
+      existing.map((v) => `${v.event_code}-${v.team}-${v.award}`)
+    );
+    const toCreate = videos.filter(
+      (v) => !existingKeys.has(`${v.event_code}-${v.team}-${v.award}`)
+    );
+    const toUpdate = videos.filter(
+      (v) => existingKeys.has(`${v.event_code}-${v.team}-${v.award}`)
+    );
+    await this.context.prisma.$transaction([
+      ...toUpdate.map(
+        (video) => this.context.prisma.firstVideo.updateMany({
+          where: {
+            event_code: video.event_code,
+            team: video.team,
+            award: video.award
+          },
+          data: video
+        })
+      ),
+      this.context.prisma.firstVideo.createMany({
+        data: toCreate
+      })
+    ]);
+  }
 }
 const ConfigureSimpleFetch = (context) => {
   return async (url, opts) => {
@@ -395,6 +436,21 @@ class Context {
         }
       }
     });
+    scheduler.add({
+      runOnStart: true,
+      allowConcurrent: false,
+      shouldRun: Every.minute,
+      timezone: "America/New_York",
+      function: async () => {
+        try {
+          this.logger.info("Syncing videos...");
+          await this.regionManagerService.syncVideos();
+          this.logger.info("Finished syncing videos.");
+        } catch (e) {
+          this.logger.error(e);
+        }
+      }
+    });
     return scheduler;
   }
   async start() {
@@ -423,7 +479,7 @@ function handleRequest(request, responseStatusCode, responseHeaders, remixContex
   );
 }
 function handleBotRequest(request, responseStatusCode, responseHeaders, remixContext) {
-  return new Promise((resolve2, reject) => {
+  return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
       /* @__PURE__ */ jsx(
@@ -440,7 +496,7 @@ function handleBotRequest(request, responseStatusCode, responseHeaders, remixCon
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
           responseHeaders.set("Content-Type", "text/html");
-          resolve2(
+          resolve(
             new Response(stream, {
               headers: responseHeaders,
               status: responseStatusCode
@@ -463,7 +519,7 @@ function handleBotRequest(request, responseStatusCode, responseHeaders, remixCon
   });
 }
 function handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext) {
-  return new Promise((resolve2, reject) => {
+  return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
       /* @__PURE__ */ jsx(
@@ -480,7 +536,7 @@ function handleBrowserRequest(request, responseStatusCode, responseHeaders, remi
           const body = new PassThrough();
           const stream = createReadableStreamFromReadable(body);
           responseHeaders.set("Content-Type", "text/html");
-          resolve2(
+          resolve(
             new Response(stream, {
               headers: responseHeaders,
               status: responseStatusCode
@@ -506,18 +562,6 @@ const entryServer = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineP
   __proto__: null,
   default: handleRequest
 }, Symbol.toStringTag, { value: "Module" }));
-function useFeatureFlag(featureName) {
-  if (typeof window === "undefined") return false;
-  const url = new URL(window.location.href);
-  return url.searchParams.get("feature." + featureName) === "true";
-}
-const resolve = (children) => typeof children === "function" ? children() : children;
-const Show = ({
-  when,
-  children
-}) => {
-  return when ? /* @__PURE__ */ jsx(Fragment, { children: resolve(children) }) : null;
-};
 const links = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -531,7 +575,6 @@ const links = () => [
   }
 ];
 function Layout({ children }) {
-  const videosEnabled = useFeatureFlag("videos");
   return /* @__PURE__ */ jsxs("html", { lang: "en", children: [
     /* @__PURE__ */ jsxs("head", { children: [
       /* @__PURE__ */ jsx("meta", { charSet: "utf-8" }),
@@ -596,7 +639,7 @@ function Layout({ children }) {
                 children: "Gallery"
               }
             ),
-            /* @__PURE__ */ jsx(Show, { when: videosEnabled, children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsx(
               "a",
               {
                 id: "videos",
@@ -604,7 +647,7 @@ function Layout({ children }) {
                 className: "text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium",
                 children: "Videos"
               }
-            ) })
+            )
           ] }) }) }),
           /* @__PURE__ */ jsx(
             "div",
@@ -718,7 +761,7 @@ function Layout({ children }) {
               children: "Gallery"
             }
           ),
-          /* @__PURE__ */ jsx(Show, { when: videosEnabled, children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsx(
             "a",
             {
               id: "videos-mobile",
@@ -726,18 +769,33 @@ function Layout({ children }) {
               className: "text-gray-700 hover:bg-gray-200 block px-3 py-2 rounded-md text-base font-medium",
               children: "Videos"
             }
-          ) })
+          )
         ] }) })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center pt-5 px-5 text-black", children: [
         children,
         /* @__PURE__ */ jsxs("div", { className: "w-full flex justify-center items-center py-4 px-6 fixed bottom-0 bg-white drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]", children: [
-          /* @__PURE__ */ jsx("div", { className: "flex-1" }),
-          /* @__PURE__ */ jsx("div", { className: "flex-1", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsx("div", { className: "flex-1 flex items-start", children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
             "a",
             {
               className: "block w-full text-center",
-              href: "https://visitcentralflorida.org/",
+              href: "https://www.rtx.com/",
+              target: "_blank",
+              children: /* @__PURE__ */ jsx(
+                "img",
+                {
+                  className: "h-8 w-auto inline-block",
+                  src: "rtx-black.jpg",
+                  alt: "RTX"
+                }
+              )
+            }
+          ) }) }),
+          /* @__PURE__ */ jsx("div", { className: "flex-1 flex items-center justify-center gap-4", children: /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+            "a",
+            {
+              className: "block w-full text-center",
+              href: "https://www.rtx.com/",
               target: "_blank",
               children: /* @__PURE__ */ jsx(
                 "img",
@@ -748,7 +806,7 @@ function Layout({ children }) {
                 }
               )
             }
-          ) }),
+          ) }) }),
           /* @__PURE__ */ jsx("div", { className: "flex-1 text-right", children: /* @__PURE__ */ jsx("a", { href: "/about", className: "text-gray-400 hover:text-blue-500", children: "About this site" }) })
         ] })
       ] }),
@@ -888,7 +946,7 @@ function Markdown({ markdown }) {
 }
 const Newsletter2024Aug21 = "# Introducing the all new Florida First Tech Challenge website!\n\n_August 21st, 2024_\n\nWelcome! As you can probably see, some things have changed around here. This is the all new Florida _First Tech Challenge™_ website - if you're not familiar with FTC, you might want to check out this [page](https://www.firstinspires.org/robotics/ftc/what-is-first-tech-challenge).\n\nIf you're looking for event info or registration, head on over to the [Events](/#events) page! If you're a coach curious to know if your team is event ready, check out the [Teams](/#teams) page.\n\nThanks, and have a great season!\n\n_– Jeremy School_\n";
 const Newsletter2024Sep11 = "# Florida FTC 2024-25 Newsletter #4\n\n_September 4th, 2024_\n\nGreetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:\n\nOnly four more days until we DIVE℠ INTO THE DEEP℠ presented by RTX. Given the number of changes being implemented this season, I encourage all teams to attend either one of the local, in-person kick-off events or the Florida virtual kick-off event on the FIRST in Florida YouTube channel (https://youtube.com/live/CH24ZmS9GWM). This is the year of change and the year of robot design. Tune in to the kick-off event at 11:15am EDT to learn more.\n\nThe following are the topics covered in this Florida FTC newsletter:\n\n1. Florida FTC Remote Kick-off – September 7, 2024 at 11:15pm EDT (Repeat)\n2. League In-Person Kick-off Events (Repeat)\n3. Studica Robotics Team Sponsorship Opportunity\n4. Field Perimeter and Matts Available\n\n## Newsletter Details\n\n**Florida FTC Remote Kick-off – September 7, 2024 at 11:15pm EDT (Repeat)** – The Florida FTC season kick-off plans include combining our traditional online state-wide program with several local league hosted events. Stay tuned for more information in the coming weeks. The best news is that we are building a kick-off agenda that will allow 5 different activities that will include interactions with teams at each of our in-person league kick-off events. As we finalize the details of our agenda, I will send out another newsletter update in the next couple of weeks with all of the help we need from our Florida teams detailing all of the help we will need.The agenda for the state-wide online kick-off event include the Bob & Sid show and a unique AJ Tech Corner session back by popular demand. The Florida FTC 2024-25 season will officially be started with a kick-off event hosted on the FIRST in Florida YouTube channel (https://youtube.com/live/CH24ZmS9GWM). During the kick-off event, we will provide an update on the season plans as well as perform a walk-through of the INTO THE DEEP℠ game elements and rules.\n\n**League In-Person Kick-off Events** – I have great news about everyone’s ability to attend an in-person kick-off event. Every Florida League will have the opportunity to attend an in-person event, and all of the in-person events will play the Florida and FIRST online virtual event. Most importantly, teams will have an opportunity to participate in the Florida Kick-off event. We will be looking for some help with introducing each in-person kick-off event, answering robot rule questions, guessing the INTO THE DEEP℠ game element, and ask Bob & Sid any game specific rule questions. The following are the list of in-person event locations and the start time of each location:\n\n- AeroCoast League (doors open at 8:00am CDT) – The Doolittle Institute, 1140 John Sims Parkway, Suite 1, Niceville, FL 32569\n- F.U.N. League (doors open at 10:15am EDT) -- American Heritage Delray, 6200 Linton Blvd, Delray Beach, FL 33484\n- Gulf Coast League (doors open at 9:00am EDT) – Seminole High School, 8401 131th Street, Seminole, FL 33776\n- North East Florida League (doors open at 10:15am EDT) – Bolles Bartram Campus, Parker Auditorium, 2264 Bartram Rd, Jacksonville, FL 32207\n- Orlando Robotics and Space Coast Leagues (doors open at 10:20am EDT) – Trinity Preparatory School, 5700 Trinity Prep Lane, Winter Park, FL 32792\n- ROBOT League (doors open at 10:15am EDT) – AMRoC FabLab, 2154 University Square Mall, Tampa, FL 33612\n- South Florida League (doors open at 10:15am EDT) --- Motorola Solutions Plantation, 8000 W. Sunrise Blvd., Plantation, FL 33322\n\n**Studica Robotics Team Sponsorship Opportunity** – If you have reviewed the July 31, 2024 release of the Competition Manual, you will have seen a new robot parts vendor that has been approved by FIRST. Studica Robotics ( www.studica.com )is selling structural, motion, and electronics components that can be used to build FIRST Tech Challenge robots. Studica Robotics will be awarding a $200 team grant each month during the season and you can apply for this grant by going to the following web page: https://www.studica.com/studica-robotics-grant-application\n\n**Field Perimeter and Matts Available** – I am giving away (first come first serve) one set of used field matts and two IFI field perimeters to any team that is within a one-hour drive of the northern Tampa area. The IFI field perimeters are the older and heavier field perimeters that can still be used by teams and competitions. I am willing to meet you within a one-hour drive from my house and would like to give the two fields to two different teams. Please reply to this email and let me know where you are located so that we can determine a shared meeting location so that I can give you the field perimeter and/or used field matts.\n\n_– Hans Wolf_\n";
-const Newsletter2024Sep21 = "# Florida FTC 2024-25 Newsletter #5\n\n_September 21st, 2024_\n\nGreetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:\n\nThe Florida FTC season theme this year is Robot Design. Therefore, this newsletter will cover several technical topics including some pointers to videos that can be helpful in robot design. My first design recommendation is to encourage teams to look at game element collectors from the Freight Frenzy and Rover Ruckus seasons. Both of these games included the yellow waffle block game element. The following YouTube video is an example of what you might see: (https://www.youtube.com/watch?v=TdaD5qsfuZ8). The other thing that is great about this video is that there are several examples of the team explaining how specific game rules influenced their robot design.\n\nThe following are the topics covered in this Florida FTC newsletter:\n\n1.                        New Florida FIRST Tech Challenge Website (www.flfirst.org)\n\n2.                        AJ’s Tech Corner\n\n3.                        SDK 10.1 Released: Use REV Hardware Client to Update\n\n4.                        Robot Design Ideas\n\n## Newsletter Details\n\n**New Florida FIRST Tech Challenge Website (www.flfirst.org)** – Some of you might have already noticed that a new Florida FIRST Tech Challenge website was release late on Tuesday evening, September 17. Our plan is that we will incrementally add more features and make it easier to use. The first two features that have been included are a new event registration process and a feature for coaches to determine what needs to be updated in the FIRST Dashboard to ensure that your team is “Event Ready”.\n\nTeams can now start registering to attend events within your league by going to the “Event” page on the www.flfirst.org website. The big change is that you will no longer need the 5-digit team code, and you will now create an account using the same email address that you use to login to your FIRST Dashboard. Find your league and the event by scrolling down on the events web page and then select the “Register” button. If the “Register” button is grayed out it means that the registration window for that event is currently not open. You will first be asked to create an account on a system called Region Manager (the following is short video that explains the event registration process: https://youtu.be/AoQfTYcof1Q) .\n\nThe second new feature is that you can now validate if your team is “Event Ready”. FIRST requires that each team must have two coaches, both coaches must have signed the online Consent & Release form, and both coaches must have an active YPP background screening. You can determine if your team is event ready by going to the “Teams” page and locating your team number. If you see a “Yes” in the bottom right corner of your team’s information box on the screen, no further action is needed. If you see a “No” you can select the “Coaches get ready now” link to be taken to Region Manager to determine what actions are required to enable your team to be approved by FIRST to attend an event.\n\nA big and loud THANK YOU to [AJ Foster](https://aj-foster.com/) and [Jeremy School](https://jeremy.school) for all of the extra time in the last several months helping re-engineer our website and to Kyle Hoyt for his continued guidance on this journey.\n\n**AJ’s Tech Corner** – AJ’s Tech Corner is now world famous as FIRST has started to promote his videos to help teams. I encourage all Florida FTC teams to visit the following YouTube channel to see the latest tech advance for our Florida lead FTA AJ Foster: https://youtube.com/@ftaaj. AJ has some great videos that include advice on field setup, reviews of some of the robot design ideas seen in Robot in 30 Hours (Ri30H) videos, and a detailed review of the Competition Manual changes.\n\n**DK 10.1 Released: Use REV Hardware Client to Update** – Last week you should have received a FIRST Tech Challenge Team Blast included an announcement that the FTC SDK would be released on September 20, 2024. I encourage teams to update to the latest SDK so that you can test and practice with this software well in advance of your first league meet. The SDK can be updated through the REV Hardware Client when your Driver Hub is connected to your computer. You will just need to press the “Update All” button in the upper right corner of the screen. The final step is to connect to the Robot controller and update the software. The final recommendation is to make sure that you also update your backup devices.\n\n**Robot Design Ideas** – FTC teams are encouraged to learn from other teams and past games. In this newsletter introductory paragraph, I referenced a video from the Freight Frenzy season that can provide some insight to your game element collector design. Another great source of design ideas is the Ri30H videos available on YouTube and some videos from the FTC parts/kit providers. The following are a few additional videos that your team can review for design ideas:\n\nREV Robotics has created a basic robot for the INTO THE DEEP game challenge that can be build from their starter kit: [https://www.revrobotics.com/duo/ftc-starter-bot/?mc_cid=ff0f386b72&mc_eid=2d47985a2d](https://www.revrobotics.com/duo/ftc-starter-bot/?mc_cid=ff0f386b72&mc_eid=2d47985a2d)\n\nGobilda has also created a starter bot that can be build from their starter kit: [https://www.gobilda.com/ftc-starter-kit-2024-2025-season/?srsltid=AfmBOooTRq70wzGgLff4X3N8koZfo8RSYqzN-C9oG81avIc4XtAwrZ04](https://www.gobilda.com/ftc-starter-kit-2024-2025-season/?srsltid=AfmBOooTRq70wzGgLff4X3N8koZfo8RSYqzN-C9oG81avIc4XtAwrZ04)\n\nThe following are a few video links to some of the Ri30H videos:\n\n- https://www.youtube.com/watch?v=_JU4qY0d6T0\n- https://www.youtube.com/watch?v=wACaSMCjWXo\n- https://www.youtube.com/playlist?list=PLkZ6_Ld1x9Y9gDrQusVzXpB_OPDQigr7e\n\n_– Hans Wolf_\n";
+const Newsletter2024Sep21 = "# Florida FTC 2024-25 Newsletter #5\n\n_September 21st, 2024_\n\nGreetings Florida FTC Teams, Coaches, Volunteers, and Sponsors:\n\nThe Florida FTC season theme this year is Robot Design. Therefore, this newsletter will cover several technical topics including some pointers to videos that can be helpful in robot design. My first design recommendation is to encourage teams to look at game element collectors from the Freight Frenzy and Rover Ruckus seasons. Both of these games included the yellow waffle block game element. The following YouTube video is an example of what you might see: (https://www.youtube.com/watch?v=TdaD5qsfuZ8). The other thing that is great about this video is that there are several examples of the team explaining how specific game rules influenced their robot design.\n\nThe following are the topics covered in this Florida FTC newsletter:\n\n1.                          New Florida FIRST Tech Challenge Website (www.flfirst.org)\n\n2.                          AJ’s Tech Corner\n\n3.                          SDK 10.1 Released: Use REV Hardware Client to Update\n\n4.                          Robot Design Ideas\n\n## Newsletter Details\n\n**New Florida FIRST Tech Challenge Website (www.flfirst.org)** – Some of you might have already noticed that a new Florida FIRST Tech Challenge website was release late on Tuesday evening, September 17. Our plan is that we will incrementally add more features and make it easier to use. The first two features that have been included are a new event registration process and a feature for coaches to determine what needs to be updated in the FIRST Dashboard to ensure that your team is “Event Ready”.\n\nTeams can now start registering to attend events within your league by going to the “Event” page on the www.flfirst.org website. The big change is that you will no longer need the 5-digit team code, and you will now create an account using the same email address that you use to login to your FIRST Dashboard. Find your league and the event by scrolling down on the events web page and then select the “Register” button. If the “Register” button is grayed out it means that the registration window for that event is currently not open. You will first be asked to create an account on a system called Region Manager (the following is short video that explains the event registration process: https://youtu.be/AoQfTYcof1Q) .\n\nThe second new feature is that you can now validate if your team is “Event Ready”. FIRST requires that each team must have two coaches, both coaches must have signed the online Consent & Release form, and both coaches must have an active YPP background screening. You can determine if your team is event ready by going to the “Teams” page and locating your team number. If you see a “Yes” in the bottom right corner of your team’s information box on the screen, no further action is needed. If you see a “No” you can select the “Coaches get ready now” link to be taken to Region Manager to determine what actions are required to enable your team to be approved by FIRST to attend an event.\n\nA big and loud THANK YOU to [AJ Foster](https://aj-foster.com/) and [Jeremy School](https://jeremy.school) for all of the extra time in the last several months helping re-engineer our website and to Kyle Hoyt for his continued guidance on this journey.\n\n**AJ’s Tech Corner** – AJ’s Tech Corner is now world famous as FIRST has started to promote his videos to help teams. I encourage all Florida FTC teams to visit the following YouTube channel to see the latest tech advance for our Florida lead FTA AJ Foster: https://youtube.com/@ftaaj. AJ has some great videos that include advice on field setup, reviews of some of the robot design ideas seen in Robot in 30 Hours (Ri30H) videos, and a detailed review of the Competition Manual changes.\n\n**DK 10.1 Released: Use REV Hardware Client to Update** – Last week you should have received a FIRST Tech Challenge Team Blast included an announcement that the FTC SDK would be released on September 20, 2024. I encourage teams to update to the latest SDK so that you can test and practice with this software well in advance of your first league meet. The SDK can be updated through the REV Hardware Client when your Driver Hub is connected to your computer. You will just need to press the “Update All” button in the upper right corner of the screen. The final step is to connect to the Robot controller and update the software. The final recommendation is to make sure that you also update your backup devices.\n\n**Robot Design Ideas** – FTC teams are encouraged to learn from other teams and past games. In this newsletter introductory paragraph, I referenced a video from the Freight Frenzy season that can provide some insight to your game element collector design. Another great source of design ideas is the Ri30H videos available on YouTube and some videos from the FTC parts/kit providers. The following are a few additional videos that your team can review for design ideas:\n\nREV Robotics has created a basic robot for the INTO THE DEEP game challenge that can be build from their starter kit: [https://www.revrobotics.com/duo/ftc-starter-bot/?mc_cid=ff0f386b72&mc_eid=2d47985a2d](https://www.revrobotics.com/duo/ftc-starter-bot/?mc_cid=ff0f386b72&mc_eid=2d47985a2d)\n\nGobilda has also created a starter bot that can be build from their starter kit: [https://www.gobilda.com/ftc-starter-kit-2024-2025-season/?srsltid=AfmBOooTRq70wzGgLff4X3N8koZfo8RSYqzN-C9oG81avIc4XtAwrZ04](https://www.gobilda.com/ftc-starter-kit-2024-2025-season/?srsltid=AfmBOooTRq70wzGgLff4X3N8koZfo8RSYqzN-C9oG81avIc4XtAwrZ04)\n\nThe following are a few video links to some of the Ri30H videos:\n\n- https://www.youtube.com/watch?v=_JU4qY0d6T0\n- https://www.youtube.com/watch?v=wACaSMCjWXo\n- https://www.youtube.com/playlist?list=PLkZ6_Ld1x9Y9gDrQusVzXpB_OPDQigr7e\n\n_– Hans Wolf_\n";
 const Newsletter2024Oct17 = `# Florida FTC 2024-25 Newsletter #6
 
 _October 17th, 2024_
@@ -999,7 +1057,7 @@ const Newsletter2025Jan19 = "# Florida FTC 2024-25 Newsletter #13\n\n_January 19
 const Newsletter2025Jan19Summary = "## Newsletter #13 Summary\n\n**League Tournaments Schedule**:\n\n- January 25, 2025: AeroCoast and Orlando Robotics League Tournaments.\n- February 1, 2025: FUN, Gulf Coast, Northeast Florida, ROBOT, South Florida, and Space Coast League Tournaments.\n- League Tournaments include judge interviews, alliance selection, Play-off Matches, and Awards Ceremony.\n\n**Florida Championship Details**:\n\n- Date: February 28–March 1, 2025.\n- Location: AdventHealth Fieldhouse, Winter Haven, FL.\n- Arrival: Teams must arrive by 11:00 AM on February 28 for inspections and qualification matches.\n- Registration Fee: $200 per team.\n- Confirmation: Respond to the invitation email within 48 hours to secure your spot.\n\n**T-Shirt Design Contest Winner**:\n\n- Winner: Team 27234, the Radical Raiders, from the F.U.N. League.\n\n**Teams Advancing to the Florida Championship**:\n\n- One (1) team: Lottery winner.\n- One (1) team: T-shirt design contest winner.\n- Fifty-four (54) teams from League Tournaments:\n  - AeroCoast: 6 teams\n  - Gulf Coast: 8 teams\n  - F.U.N.: 6 teams\n  - Orlando Robotics: 6 teams\n  - Northeast Florida: 8 teams\n  - ROBOT: 6 teams\n  - South Florida: 8 teams\n  - Space Coast: 6 teams\n\nGood luck to all teams in the League Tournaments!\n";
 const Newsletter2025Jan6Summary = "## Newsletter #12 Summary\n\n**Florida Championship**:\n\n- Date: February 28–March 1, 2025\n- Location: Advent Fieldhouse, Winter Haven, FL\n- 56 teams will qualify via League Tournaments and additional criteria.\n\n**League Tournaments**:\n\n- Dates: Final four weeks of the season (specific dates depend on the league).\n\nActivities include:\n\n- Dean’s List interviews (no award).\n- Alliance selection and playoff matches.\n- Judge interviews and awards.\n- Announcement of teams advancing to the Florida Championship.\n\n**Judge Interviews**:\n\n- 10-minute interviews (hybrid format: online before tournament day).\n- Required document: Engineering Portfolio (Control Award form now integrated).\n- Ensure access to the online scoring software: [ftc-scoring.firstinspires.org](https://ftc-scoring.firstinspires.org/).\n\n**Alliance Selection and Playoff Matches**:\n\n- Top 4 or 6 ranked teams (based on size) become alliance captains.\n- Double elimination bracket determines the winning alliance.\n\n**Advancement to Florida Championship**:\n\n- Respond to the invitation email within 48 hours.\n- Registration fee: $200 per team.\n- Arrival time: By 11:00 AM, February 28, 2025, for inspections and matches.\n\n**Advancing Teams by League**:\n\n- AeroCoast: 6 teams\n- Gulf Coast: 8 teams\n- F.U.N.: 6 teams\n- Orlando Robotics: 6 teams\n- North East Florida: 8 teams\n- ROBOT: 6 teams\n- South Florida: 8 teams\n- Space Coast: 6 teams\n\n**Key Changes**:\n\n- Hybrid judging interviews conducted online.\n- Engineering Portfolio replaces multiple documents for awards.\n- Playoff structure uses double elimination.\n";
 const Newsletter2024Dec10Summary = "## Newsletter #11 Summary\n\n**Dean’s List Nominations**:\n\n- Deadline: December 15, 2024.\n- Submit essays via the FIRST dashboard under the “Florida Dean’s List Interview” event.\n- Each team may nominate up to 2 students (10th/11th grade).\n- Interviews held at league tournaments; finalists announced on March 1, 2025.\n- Finalists compete for Dean’s List Winner titles at the World Championship in April 2025.\n\n**Key Rule Changes**:\n\n- Team Numbers:\n  - No Alliance Markers required.\n  - Two red and two blue team numbers with white text needed (template available upon request).\n- Servos:\n  - Output power <8 watts, stall current <4 amps.\n  - Validated servo list in the _Inspection Quick Reference_.\n- Horizontal Expansion:\n  - Robots must stay within a 20x42-inch area after the match begins.\n  - Violations apply if the robot exceeds limits during gameplay.\n\n**Competition Manual Updates**:\n\n- Human Players:\n\n  - May only place SCORING ELEMENTS in the OBSERVATION ZONE during AUTO and TELEOP.\n  - Simultaneous contact by Robots and Human Players is prohibited.\n\n- Horizontal Expansion:\n\n  - Expansion must stay coplanar to the floor.\n  - Re-inspection no longer required for violations.\n\n- ASCEND Scoring:\n\n  - Robots may stabilize on the SUBMERSIBLE but must not touch it at match end.\n\n**Action Items**:\n\n- Review the six published Team Updates before attending events.\n- Updates available on the [FIRST Game and Season Info page](https://www.firstinspires.org/resource-library/ftc/game-and-season-info).\n";
-const meta$4 = () => {
+const meta$3 = () => {
   return [
     { title: "Newsletter | Florida FIRST Tech Challenge" },
     { name: "description", content: "Welcome to Remix!" }
@@ -1071,7 +1129,7 @@ function Newsletter() {
 const route1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Newsletter,
-  meta: meta$4
+  meta: meta$3
 }, Symbol.toStringTag, { value: "Module" }));
 const Gallery = () => {
   return /* @__PURE__ */ jsx("div", { className: "bg-white shadow-md p-4 max-w-5xl mx-auto flex gap-2", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3", children: [
@@ -1098,7 +1156,7 @@ const ContentPageHeading = ({
   /* @__PURE__ */ jsx("img", { src: image, alt: "Logo" }),
   /* @__PURE__ */ jsx("div", { className: "h-full absolute top-0 left-0 flex flex-col justify-end", children: /* @__PURE__ */ jsx("h2", { className: "text-6xl font-bold text-white bg-black w-auto py-6 px-4 opacity-80", children: text }) })
 ] });
-const meta$3 = () => {
+const meta$2 = () => {
   return [
     { title: "Leagues | Florida FIRST Tech Challenge" },
     {
@@ -1116,10 +1174,10 @@ function Leagues() {
 const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Leagues,
-  meta: meta$3
+  meta: meta$2
 }, Symbol.toStringTag, { value: "Module" }));
 const cover = "The Florida _[FIRST Tech Challenge™](https://www.firstinspires.org/robotics/ftc/what-is-first-tech-challenge)_ program is operated by the Tampa Bay Robotics Foundation and is a sport for engineers. However, FIRST is more than building robots and enables middle and high school students to apply the skills they are learning school in a sports style robotics competition.\n\n_FIRST Tech Challenge™_ teams (grades 6-12) are challenged to design, build, program, and operate robots to compete in a head-to-head challenge in an alliance/team format. The robot kit is reusable from year to year and can be coded using a variety of levels of Java-based programming. Participants are eligible to apply for **$80M+** in college scholarships.\n\nThe Florida _FIRST Tech Challenge™_ program includes **215+** teams from Pensacola to Miami. Florida is organized into [leagues](/leagues) that compete in local events between October and earlier February with some teams qualifying for the Florida Championship in early March.\n\nFor more information contact:\n\nHans Wolf – hanskwolf@gmail.com or hwolf@firstpartners.org\n\nFIRST Program Delivery Partner (PDP)\n";
-const meta$2 = () => {
+const meta$1 = () => {
   return [
     { title: "Florida FIRST Tech Challenge" },
     { name: "description", content: "Welcome to Remix!" }
@@ -1140,7 +1198,7 @@ function Index() {
 const route4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Index,
-  meta: meta$2
+  meta: meta$1
 }, Symbol.toStringTag, { value: "Module" }));
 const InfoCardHeader = ({ title, secondaryContent }) => {
   return /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
@@ -1305,7 +1363,7 @@ const EventRow = ({ event }) => {
     ] }) })
   ] });
 };
-const loader$2 = async () => {
+const loader$3 = async () => {
   const persisted = await prisma.$queryRaw`
     SELECT *, MAX(saved_at) as saved_at
     FROM first_event
@@ -1430,96 +1488,87 @@ function Events() {
 const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Events,
-  loader: loader$2
+  loader: loader$3
 }, Symbol.toStringTag, { value: "Module" }));
-const videos = false;
-const features = {
-  videos
+const loader$2 = async () => {
+  const prisma2 = new PrismaClient();
+  const videos = await prisma2.firstVideo.findMany({
+    orderBy: [{ event_code: "asc" }, { team: "asc" }]
+  });
+  const teams = await prisma2.firstTeam.findMany();
+  return json({ videos, teams });
 };
-const FeatureDisabled = (props) => {
-  return /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8", children: [
-    /* @__PURE__ */ jsx("h1", { className: "text-3xl font-bold", children: "Page Not Found" }),
-    /* @__PURE__ */ jsxs("p", { className: "mt-4", children: [
-      "The ",
-      props.feature,
-      " feature is currently disabled."
-    ] })
-  ] });
-};
-console.log(features);
-const meta$1 = () => {
-  return [
-    { title: "Videos | Florida FIRST Tech Challenge" },
-    {
-      name: "description",
-      content: "Videos submitted by teams in the Florida FIRST Tech Challenge"
-    }
-  ];
-};
-const VIDEOS = [
-  {
-    teamNumber: "12345",
-    teamName: "Robotics Masters",
-    title: "Robot Reveal 2024",
-    videoUrl: "https://youtube.com/example1"
-  },
-  {
-    teamNumber: "67890",
-    teamName: "Tech Titans",
-    title: "Competition Highlights",
-    videoUrl: "https://youtube.com/example2"
-  }
-];
 function Videos() {
-  const videosEnabled = useFeatureFlag("videos");
-  if (!videosEnabled) {
-    return /* @__PURE__ */ jsx(FeatureDisabled, { feature: "videos" });
-  }
-  return /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center mb-8", children: [
-      /* @__PURE__ */ jsx("h1", { className: "text-3xl font-bold", children: "Videos" }),
-      /* @__PURE__ */ jsx(
-        "a",
-        {
-          href: "https://ftcregion.com",
-          target: "_blank",
-          className: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md",
-          children: "Submit"
-        }
-      )
+  const { videos, teams } = useLoaderData();
+  const [searchTerm, setSearchTerm] = useState("");
+  const groupedVideos = videos.filter(
+    (video) => video.event_name.toLowerCase().includes(searchTerm.toLowerCase()) || video.team.toString().includes(searchTerm.toLowerCase()) || video.award.toLowerCase().includes(searchTerm.toLowerCase())
+  ).reduce(
+    (acc, video) => {
+      if (!acc[video.event_code]) {
+        acc[video.event_code] = {
+          name: video.event_name,
+          videos: []
+        };
+      }
+      acc[video.event_code].videos.push(video);
+      return acc;
+    },
+    {}
+  );
+  return /* @__PURE__ */ jsxs("div", { className: "w-full md:min-w-[750px] md:max-w-prose flex flex-col gap-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: "w-full flex flex-col items-center", children: [
+      /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold", children: "Award Videos" }),
+      /* @__PURE__ */ jsx("p", { className: "text-gray-500", children: "Below, you can find video submissions for the Compass award." }),
+      /* @__PURE__ */ jsxs("p", { className: "text-gray-500", children: [
+        "To submit a video, please login to",
+        " ",
+        /* @__PURE__ */ jsx(
+          "a",
+          {
+            href: "https://ftcregion.com",
+            target: "_blank",
+            rel: "noreferrer",
+            className: "text-blue-600 hover:underline",
+            children: "Region Manager"
+          }
+        ),
+        ", find the event, and provide the video URL."
+      ] })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "grid gap-6", children: VIDEOS.map((video) => /* @__PURE__ */ jsxs(
-      "div",
-      {
-        className: "border p-4 shadow-sm bg-white",
-        children: [
-          /* @__PURE__ */ jsxs("h2", { className: "text-xl font-semibold", children: [
-            "Team ",
-            video.teamNumber,
-            " - ",
-            video.teamName
-          ] }),
-          /* @__PURE__ */ jsx("p", { className: "text-gray-600 mb-2", children: video.title }),
-          /* @__PURE__ */ jsx(
-            "a",
-            {
-              href: video.videoUrl,
-              target: "_blank",
-              rel: "noopener noreferrer",
-              className: "text-blue-600 hover:underline",
-              children: "Watch Video →"
-            }
-          )
-        ]
-      },
-      `${video.teamNumber}-${video.title}`
-    )) })
+    /* @__PURE__ */ jsx("div", { className: "flex flex-col w-full mx-auto", children: Object.entries(groupedVideos).map(([eventCode, { name, videos: videos2 }]) => /* @__PURE__ */ jsxs("div", { className: "mb-8", children: [
+      /* @__PURE__ */ jsx("h2", { className: "text-2xl font-bold text-gray-600 mb-4 text-center", children: name }),
+      /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-4", children: videos2.filter((video) => video.url).map((video) => {
+        var _a;
+        return /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "flex flex-row bg-white p-4 shadow-md gap-4",
+            children: [
+              /* @__PURE__ */ jsx("div", { children: video.team }),
+              /* @__PURE__ */ jsx("div", { children: ((_a = teams.find((team) => team.number === video.team)) == null ? void 0 : _a.name) ?? "Unknown Team" }),
+              /* @__PURE__ */ jsx("div", { className: "flex-grow text-right", children: video.url ? /* @__PURE__ */ jsx(
+                "a",
+                {
+                  href: video.url,
+                  target: "_blank",
+                  rel: "noreferrer",
+                  className: "text-blue-600 hover:underline text-sm",
+                  children: "Watch Video →"
+                }
+              ) : /* @__PURE__ */ jsx("span", { className: "text-gray-400 text-sm", children: "Coming Soon" }) })
+            ]
+          },
+          `${video.event_code}-${video.team}`
+        );
+      }) })
+    ] }, eventCode)) })
   ] });
 }
 const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Videos,
-  meta: meta$1
+  loader: loader$2
 }, Symbol.toStringTag, { value: "Module" }));
 const about = "Hello!\n\nThis site was created by me, [Jeremy School](https://jeremy.school) - I hope you find it useful! If you have feedback or are interested in working together on a project, feel free to send an email to contact@jeremy.school.\n\nThanks for stopping by!\n";
 const meta = () => {
@@ -1748,7 +1797,7 @@ const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   default: NotFound,
   loader
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-ePb33b9q.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/components-Js6hlzih.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-5aBBHp8t.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/components-Js6hlzih.js", "/assets/useFeatureFlag-rM4eEOOO.js"], "css": ["/assets/root-LoKFJi8h.css"] }, "routes/newsletter": { "id": "routes/newsletter", "parentId": "root", "path": "newsletter", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/newsletter-Dm77R39A.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/markdown-BDYZP2TH.js"], "css": [] }, "routes/gallery": { "id": "routes/gallery", "parentId": "root", "path": "gallery", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/gallery-BQX_p6f5.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js"], "css": [] }, "routes/leagues": { "id": "routes/leagues", "parentId": "root", "path": "leagues", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/leagues-CicBvhxm.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/markdown-BDYZP2TH.js", "/assets/content-page-heading-D1lj7BkE.js"], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-hzYMQUDT.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/content-page-heading-D1lj7BkE.js", "/assets/markdown-BDYZP2TH.js"], "css": [] }, "routes/events": { "id": "routes/events", "parentId": "root", "path": "events", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/events-B9kXHMLm.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/info-category-DhyGRfM9.js", "/assets/components-Js6hlzih.js"], "css": [] }, "routes/videos": { "id": "routes/videos", "parentId": "root", "path": "videos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/videos-DeWG7IVN.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/useFeatureFlag-rM4eEOOO.js"], "css": [] }, "routes/about": { "id": "routes/about", "parentId": "root", "path": "about", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/about-5yvnF0dP.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/markdown-BDYZP2TH.js"], "css": [] }, "routes/teams": { "id": "routes/teams", "parentId": "root", "path": "teams", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/teams-CJiRx50T.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js", "/assets/info-category-DhyGRfM9.js", "/assets/components-Js6hlzih.js"], "css": [] }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_-B9P6KdcJ.js", "imports": ["/assets/jsx-runtime-6y6M2hOi.js"], "css": [] } }, "url": "/assets/manifest-d2d2fe28.js", "version": "d2d2fe28" };
+const serverManifest = { "entry": { "module": "/assets/entry.client-B-G-elFD.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/components-C5c64wmR.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-CPbg51Zv.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/components-C5c64wmR.js"], "css": ["/assets/root-BqRT6muG.css"] }, "routes/newsletter": { "id": "routes/newsletter", "parentId": "root", "path": "newsletter", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/newsletter-BVHmK0hm.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/markdown-nVLLpt3n.js"], "css": [] }, "routes/gallery": { "id": "routes/gallery", "parentId": "root", "path": "gallery", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/gallery-CUBMyBhQ.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js"], "css": [] }, "routes/leagues": { "id": "routes/leagues", "parentId": "root", "path": "leagues", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/leagues-B3JFqO1h.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/markdown-nVLLpt3n.js", "/assets/content-page-heading-dsc4FPMR.js"], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-Btpa_FpI.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/content-page-heading-dsc4FPMR.js", "/assets/markdown-nVLLpt3n.js"], "css": [] }, "routes/events": { "id": "routes/events", "parentId": "root", "path": "events", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/events-CiTD_SmL.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/info-category-DNcmEVWn.js", "/assets/components-C5c64wmR.js"], "css": [] }, "routes/videos": { "id": "routes/videos", "parentId": "root", "path": "videos", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/videos-DSxO7lul.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/components-C5c64wmR.js"], "css": [] }, "routes/about": { "id": "routes/about", "parentId": "root", "path": "about", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/about-pRnX2wgm.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/markdown-nVLLpt3n.js"], "css": [] }, "routes/teams": { "id": "routes/teams", "parentId": "root", "path": "teams", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/teams-DBJ13Izg.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js", "/assets/info-category-DNcmEVWn.js", "/assets/components-C5c64wmR.js"], "css": [] }, "routes/$": { "id": "routes/$", "parentId": "root", "path": "*", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_-C46XZiQX.js", "imports": ["/assets/jsx-runtime-d4vcKfGz.js"], "css": [] } }, "url": "/assets/manifest-9d1108af.js", "version": "9d1108af" };
 const mode = "production";
 const assetsBuildDirectory = "build/client";
 const basename = "/";

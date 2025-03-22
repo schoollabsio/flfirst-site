@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-6y6M2hOi.js";import{M as a}from"./markdown-BDYZP2TH.js";import{C as n}from"./content-page-heading-D1lj7BkE.js";const o=`The Florida *FIRST Tech Challenge*™ robotics program follows the **League** tournament system. The league system allows to attend a practice/scrimmage day typically in late October, 3-4 League Meets between November and January, and a final League Tournament in late January or early February.
+import{j as e}from"./jsx-runtime-d4vcKfGz.js";import{M as a}from"./markdown-nVLLpt3n.js";import{C as n}from"./content-page-heading-dsc4FPMR.js";const o=`The Florida *FIRST Tech Challenge*™ robotics program follows the **League** tournament system. The league system allows to attend a practice/scrimmage day typically in late October, 3-4 League Meets between November and January, and a final League Tournament in late January or early February.
 
 The **League Tournament** is a championship event that includes judge and robot awards and determines which teams participate in the Florida Championship. The Florida Championship determines which Florida teams are invited to the FIRST World Championship.
 

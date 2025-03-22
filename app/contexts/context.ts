@@ -117,6 +117,22 @@ export class Context {
       },
     });
 
+    scheduler.add({
+      runOnStart: true,
+      allowConcurrent: false,
+      shouldRun: Every.minute,
+      timezone: "America/New_York",
+      function: async () => {
+        try {
+          this.logger.info("Syncing videos...");
+          await this.regionManagerService.syncVideos();
+          this.logger.info("Finished syncing videos.");
+        } catch (e) {
+          this.logger.error(e);
+        }
+      },
+    });
+
     return scheduler;
   }
 

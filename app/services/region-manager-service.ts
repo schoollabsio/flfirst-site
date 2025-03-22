@@ -16,6 +16,22 @@ const DEFAULT_LEAGUE = {
   location: null,
 };
 
+interface RMVideosResponse {
+  data: {
+    videos: Array<{
+      event_name: string;
+      url: string | null;
+      team: number;
+      event_code: string;
+      award: string;
+      available_at: string;
+    }>;
+    video_count: number;
+  };
+  success: boolean;
+  errors: null | any[];
+}
+
 export interface RegionaManagerServiceContext {
   simpleFetch: SimpleFetch;
   prisma: PrismaClient;
@@ -37,6 +53,10 @@ export default class RegionManagerService {
 
   get teamsUri(): string {
     return `${this.context.settings.regionManager.host}/api/s/${this.context.settings.regionManager.season}/r/${this.context.settings.regionManager.region}/teams`;
+  }
+
+  get videosUri(): string {
+    return `${this.context.settings.regionManager.host}/api/s/${this.context.settings.regionManager.season}/r/${this.context.settings.regionManager.region}/videos`;
   }
 
   async syncEvents(): Promise<void> {
@@ -259,6 +279,49 @@ export default class RegionManagerService {
           // saved at
           saved_at: dayjs().tz("America/New_York").toDate(),
         })),
+      }),
+    ]);
+  }
+
+  async syncVideos(): Promise<void> {
+    const raw = await this.context.simpleFetch(this.videosUri, {});
+    const response = (await raw.json()) as RMVideosResponse;
+
+    const videos = response.data.videos.map((video) => ({
+      event_code: video.event_code,
+      event_name: video.event_name,
+      team: video.team,
+      award: video.award,
+      url: video.url,
+      available_at: dayjs(video.available_at).toDate(),
+      saved_at: dayjs().tz("America/New_York").toDate(),
+    }));
+
+    const existing = await this.context.prisma.firstVideo.findMany();
+    const existingKeys = new Set(
+      existing.map((v) => `${v.event_code}-${v.team}-${v.award}`),
+    );
+
+    const toCreate = videos.filter(
+      (v) => !existingKeys.has(`${v.event_code}-${v.team}-${v.award}`),
+    );
+    const toUpdate = videos.filter((v) =>
+      existingKeys.has(`${v.event_code}-${v.team}-${v.award}`),
+    );
+
+    await this.context.prisma.$transaction([
+      ...toUpdate.map((video) =>
+        this.context.prisma.firstVideo.updateMany({
+          where: {
+            event_code: video.event_code,
+            team: video.team,
+            award: video.award,
+          },
+          data: video,
+        }),
+      ),
+      this.context.prisma.firstVideo.createMany({
+        data: toCreate,
       }),
     ]);
   }
