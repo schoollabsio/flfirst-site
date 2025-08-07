@@ -26,9 +26,7 @@ const formatWebsiteUrl = (url: string) =>
 
 const EventRow = ({ event }: { event: FirstEvent }) => {
   const venue = event.virtual ? (
-    <div>
-      <em>Virtual Event</em>
-    </div>
+    <div>Online</div>
   ) : (
     <div>
       <a
