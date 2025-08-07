@@ -82,6 +82,7 @@ export default class RegionManagerService {
           .toDate(),
         date_end: dayjs(event.date_end).tz(event.location.timezone).toDate(),
         live_stream_url: event.live_stream_url,
+        virtual: event.virtual || false,
 
         // league
         league_code: league.code,

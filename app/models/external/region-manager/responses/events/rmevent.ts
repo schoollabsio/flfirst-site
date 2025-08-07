@@ -8,6 +8,7 @@ export interface RMEvent {
   date_start: Date;
   date_end: Date;
   live_stream_url?: string;
+  virtual?: boolean;
 
   league?: {
     code: string;
