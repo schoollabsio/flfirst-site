@@ -25,7 +25,11 @@ const formatWebsiteUrl = (url: string) =>
   url.replace(/(https?):\/\/(www\.)?/, "");
 
 const EventRow = ({ event }: { event: FirstEvent }) => {
-  const venue = (
+  const venue = event.virtual ? (
+    <div>
+      <em>Virtual Event</em>
+    </div>
+  ) : (
     <div>
       <a
         className="hover:text-blue-600"
@@ -45,6 +49,13 @@ const EventRow = ({ event }: { event: FirstEvent }) => {
     </div>
   );
 
+  const venueWebsite =
+    !event.virtual && event.locationWebsite != null ? (
+      <a target="_blank" rel="noreferrer" href={event.locationWebsite}>
+        {formatWebsiteUrl(event.locationWebsite)}
+      </a>
+    ) : null;
+
   const isTooEarly = dayjs().isBefore(event.opensAt);
   const isTooLate = dayjs().isAfter(event.closesAt);
 
@@ -62,16 +73,7 @@ const EventRow = ({ event }: { event: FirstEvent }) => {
 
   return (
     <InfoCard>
-      <InfoCardHeader
-        title={event.name}
-        secondaryContent={
-          event.locationWebsite && (
-            <a target="_blank" rel="noreferrer" href={event.locationWebsite}>
-              {formatWebsiteUrl(event.locationWebsite)}
-            </a>
-          )
-        }
-      />
+      <InfoCardHeader title={event.name} secondaryContent={venueWebsite} />
       <InfoCardContent>
         <InfoCardColumn>
           <InfoCardAttribute
@@ -209,6 +211,7 @@ export const loader = async () => {
     capacity: event.capacity || 0,
     waitlisted: event.waitlisted || 0,
     waitlistCapacity: event.waitlist_capacity || 0,
+    virtual: event.virtual,
     savedAt: dayjs(Number(event.saved_at)).toDate(),
   }));
 

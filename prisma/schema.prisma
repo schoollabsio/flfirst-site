@@ -24,6 +24,7 @@ model FirstEvent {
   date_start      DateTime
   date_end        DateTime
   live_stream_url String?
+  virtual         Boolean?
 
   // league info
   league_code     String?
