@@ -30,5 +30,6 @@ export interface FirstEvent {
   capacity: number;
   waitlisted: number;
   waitlistCapacity: number;
+  virtual: boolean;
   savedAt: Date;
 }
